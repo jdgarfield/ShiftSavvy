@@ -1,0 +1,157 @@
+import { Mail, MapPin, Shield, CreditCard, Languages, Facebook, Instagram, Twitter, Youtube, Linkedin } from "lucide-react";
+
+/**
+ * ShiftSavvy Footer
+ * - Mobile-first, responsive
+ * - Accessible (landmark, aria labels, visible focus states)
+ * - Dark-mode friendly
+ * - Link placeholders ready to wire to your routes/CMS
+ * - Includes: Nav, Legal, Social, Security note, Newsletter, Language switcher
+ */
+export default function Footer() {
+  return (
+    <footer role="contentinfo" className="w-full border-t bg-white/70 backdrop-blur dark:bg-neutral-900/60 border-neutral-200 dark:border-neutral-800">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+        {/* Top Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Brand / Blurb */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-xl bg-neutral-900 dark:bg-white" aria-hidden />
+              <span className="text-xl font-bold tracking-tight dark:text-white">ShiftSavvy</span>
+            </div>
+            <p className="text-sm text-neutral-600 dark:text-neutral-300">
+              Tools for tipped pros to track earnings, shifts, and taxes—clearly and securely.
+            </p>
+            <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
+              <MapPin className="h-4 w-4" aria-hidden />
+              <span>172 N. Peterson Ave, Louisville, KY 40206</span>
+            </div>
+            <a href="/contact" className="inline-flex items-center gap-2 text-sm font-medium text-neutral-900 dark:text-white hover:underline">
+              <Mail className="h-4 w-4" aria-hidden /> Contact Us
+            </a>
+          </div>
+
+          {/* Product */}
+          <nav aria-label="Product" className="grid grid-cols-2 gap-8 md:grid-cols-1">
+            <div>
+              <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">Product</h3>
+              <ul className="mt-4 space-y-3 text-sm">
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/features">Features</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/pricing">Pricing</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/roadmap">Roadmap</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/changelog">Changelog</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">Company</h3>
+              <ul className="mt-4 space-y-3 text-sm">
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/about">About</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/careers">Careers</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/blog">Blog</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/help">Help Center / FAQ</a></li>
+              </ul>
+            </div>
+          </nav>
+
+          {/* Legal & Compliance */}
+          <nav aria-label="Legal" className="grid grid-cols-2 gap-8 md:grid-cols-1">
+            <div>
+              <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">Legal</h3>
+              <ul className="mt-4 space-y-3 text-sm">
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/legal/terms">Terms of Service</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/legal/privacy">Privacy Policy</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/legal/cookies">Cookie Policy / Preferences</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/legal/accessibility">Accessibility Statement</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">Compliance</h3>
+              <ul className="mt-4 space-y-3 text-sm">
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/legal/data-requests">Data Request / Deletion</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/legal/do-not-sell">Do Not Sell or Share My Info</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/security">Security</a></li>
+                <li><a className="hover:underline text-neutral-600 dark:text-neutral-300" href="/status">System Status</a></li>
+              </ul>
+            </div>
+          </nav>
+
+          {/* Newsletter & Language */}
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">Stay in the loop</h3>
+              <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">Monthly updates on features, tips, and best practices.</p>
+              <form className="mt-3 flex w-full max-w-md gap-2" onSubmit={(e) => e.preventDefault()} aria-label="Newsletter signup form">
+                <input
+                  type="email"
+                  required
+                  placeholder="you@workmail.com"
+                  className="flex-1 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-800 dark:focus:ring-neutral-200"
+                />
+                <button
+                  type="submit"
+                  className="rounded-xl px-4 py-2 text-sm font-semibold bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-800 dark:focus:ring-white"
+                  aria-label="Subscribe to newsletter"
+                >
+                  Subscribe
+                </button>
+              </form>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3" aria-label="Language switcher">
+              <Languages className="h-4 w-4 text-neutral-500" aria-hidden />
+              <button className="rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-1 text-sm hover:bg-neutral-50 dark:hover:bg-neutral-800">EN</button>
+              <button className="rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-1 text-sm hover:bg-neutral-50 dark:hover:bg-neutral-800">ES</button>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
+                <Shield className="h-4 w-4" aria-hidden />
+                <span>Protected by SSL. Auth & data hosted on Firebase.</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
+                <CreditCard className="h-4 w-4" aria-hidden />
+                <span>Payments securely processed by Stripe.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="my-8 border-t border-dashed border-neutral-200 dark:border-neutral-800" />
+
+        {/* Bottom bar */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-neutral-500">
+            © {new Date().getFullYear()} ShiftSavvy LC. All rights reserved.
+          </p>
+
+          <div className="flex items-center gap-4" aria-label="Social links">
+            <a aria-label="ShiftSavvy on Instagram" className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800" href="https://instagram.com/">
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a aria-label="ShiftSavvy on TikTok" className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800" href="https://tiktok.com/@">
+              {/* TikTok is not in lucide-react by default; use Twitter icon as placeholder or add a custom SVG */}
+              <Twitter className="h-4 w-4" />
+            </a>
+            <a aria-label="ShiftSavvy on YouTube" className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800" href="https://youtube.com/">
+              <Youtube className="h-4 w-4" />
+            </a>
+            <a aria-label="ShiftSavvy on LinkedIn" className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800" href="https://linkedin.com/company/">
+              <Linkedin className="h-4 w-4" />
+            </a>
+            <a aria-label="ShiftSavvy on Facebook" className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800" href="https://facebook.com/">
+              <Facebook className="h-4 w-4" />
+            </a>
+          </div>
+
+          <ul className="flex flex-wrap items-center gap-4 text-xs text-neutral-500">
+            <li><a className="hover:underline" href="/sitemap">Sitemap</a></li>
+            <li><a className="hover:underline" href="/legal/licenses">Licenses</a></li>
+            <li><a className="hover:underline" href="/press">Press Kit</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  );
+}
