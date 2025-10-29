@@ -47,9 +47,9 @@ export default function ShiftForm() {
   });
 
   const createPresetJobsMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (currentJobs: Job[]) => {
       const presetJobs = ['Server', 'Bartender', 'Expo', 'Busser', 'Host'];
-      const existingJobNames = jobs.map(j => j.name);
+      const existingJobNames = currentJobs.map(j => j.name);
       const jobsToCreate = presetJobs.filter(name => !existingJobNames.includes(name));
       
       if (jobsToCreate.length === 0) {
@@ -75,10 +75,6 @@ export default function ShiftForm() {
     onSuccess: (results) => {
       if (results.length > 0) {
         queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
-        toast({
-          title: t('common.success'),
-          description: `${results.length} preset job(s) added! Select one to continue.`,
-        });
       }
     },
     onError: (error: Error) => {
@@ -95,7 +91,7 @@ export default function ShiftForm() {
       
       if (missingJobs.length > 0) {
         setHasAttemptedCreate(true);
-        createPresetJobsMutation.mutate();
+        createPresetJobsMutation.mutate(jobs);
       }
     }
   }, [isAuthenticated, jobsLoading, hasAttemptedCreate, createPresetJobsMutation, jobs]);
