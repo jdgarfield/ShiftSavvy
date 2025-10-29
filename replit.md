@@ -6,6 +6,16 @@ ShiftSavvy is a mobile-first Progressive Web App (PWA) designed for service indu
 
 **Core Features:**
 - Multi-job shift tracking with detailed earnings breakdown
+- Interactive dashboard with dynamic filtering
+  - Click TODAY box to filter shifts for current day (toggles on/off)
+  - Click THIS WEEK box to filter shifts for current week starting Sunday (toggles on/off)
+  - Click THIS MONTH box to navigate to monthly calendar view
+  - Active filters show visual indication with ring styling
+- Calendar view for monthly earnings visualization
+  - Monthly grid layout showing all days
+  - Daily earnings summaries displayed on calendar
+  - Month-level statistics (total earnings, shift count)
+  - Mobile-responsive design
 - Visual analytics with charts and statistical summaries
 - Tax estimation capabilities (federal, state, local)
 - CSV/PDF export for tax filing
@@ -203,6 +213,10 @@ Preferred communication style: Simple, everyday language.
 **Date Handling:**
 - date-fns - Date formatting and manipulation
 - Used throughout for shift date display and period calculations
+- Custom utilities (`client/src/lib/dateUtils.ts`):
+  - `parseLocalDate`: Timezone-safe parsing of YYYY-MM-DD strings as local midnight
+  - `formatLocalDate`: Format Date objects as YYYY-MM-DD in local timezone
+  - Ensures consistent date handling across timezones for dashboard filters and calendar view
 
 **Form Management:**
 - react-hook-form - Form state and validation
