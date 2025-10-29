@@ -17,7 +17,11 @@ ShiftSavvy is a mobile-first Progressive Web App (PWA) designed for service indu
   - Month-level statistics (total earnings, shift count)
   - Mobile-responsive design
 - Visual analytics with charts and statistical summaries
-- Tax estimation capabilities (federal, state, local)
+- Tax estimation capabilities (federal, state, local) with 2025 rates
+  - Prominent disclaimers: "This is a planning tool, not a tax filing tool"
+  - Clear warnings about limitations (no progressive brackets, deductions, credits)
+  - Link to IRS Tax Withholding Estimator for professional guidance
+  - Disclaimers included in both web UI and PDF exports
 - CSV/PDF export for tax filing
 - User profile management
   - Collapsible profile editor with summary view
@@ -43,6 +47,21 @@ ShiftSavvy is a mobile-first Progressive Web App (PWA) designed for service indu
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+## Recent Changes
+
+### October 2025 - Tax Disclaimer & 2025 Rate Updates
+- **Tax Rates Updated**: Updated all state tax rates to 2025 estimates in shared/taxRates.ts
+  - Added District of Columbia (DC) to state tax rates
+  - Updated rates for states with changes (AR, CO, ID, IN, KY, MO, NC, OH, UT)
+  - Added comprehensive documentation about limitations and last-update metadata
+- **Tax Disclaimers Added**: 
+  - Prominent disclaimer on reports page with AlertTriangle icon
+  - Clear statement: "This is a planning tool, not a tax filing tool"
+  - Lists limitations: no progressive brackets, deductions, credits, or self-employment tax
+  - Links to IRS Tax Withholding Estimator for professional guidance
+  - PDF exports include disclaimer text to ensure offline awareness
+- **Tax Calculation Transparency**: Documentation clearly states simplified flat-rate approach vs progressive brackets
 
 ## System Architecture
 
