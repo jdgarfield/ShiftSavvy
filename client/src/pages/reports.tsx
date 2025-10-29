@@ -187,20 +187,25 @@ export default function Reports() {
       
       // Tax estimates section
       doc.setFontSize(14);
-      doc.text('Tax Estimates', 14, 100);
+      doc.text('Tax Estimates (Planning Estimates Only)', 14, 100);
+      doc.setFontSize(9);
+      doc.setTextColor(150, 0, 0); // Red text for disclaimer
+      doc.text('DISCLAIMER: These are simplified estimates for planning only.', 14, 107);
+      doc.text('This is a planning tool, not a tax filing tool. Consult a tax professional.', 14, 112);
+      doc.setTextColor(0, 0, 0); // Reset to black
       doc.setFontSize(10);
-      doc.text(`Federal Tax (${(federalTaxRate * 100).toFixed(1)}%): $${federalTax.toFixed(2)}`, 14, 108);
-      doc.text(`State Tax (${(stateTaxRate * 100).toFixed(1)}%): $${stateTax.toFixed(2)}`, 14, 114);
-      doc.text(`Local Tax (${(localTaxRate * 100).toFixed(2)}%): $${localTax.toFixed(2)}`, 14, 120);
-      doc.text(`Total Tax: $${totalTax.toFixed(2)}`, 14, 126);
-      doc.text(`Take Home: $${takeHome.toFixed(2)}`, 14, 132);
+      doc.text(`Federal Tax (${(federalTaxRate * 100).toFixed(1)}%): $${federalTax.toFixed(2)}`, 14, 120);
+      doc.text(`State Tax (${(stateTaxRate * 100).toFixed(1)}%): $${stateTax.toFixed(2)}`, 14, 126);
+      doc.text(`Local Tax (${(localTaxRate * 100).toFixed(2)}%): $${localTax.toFixed(2)}`, 14, 132);
+      doc.text(`Total Tax: $${totalTax.toFixed(2)}`, 14, 138);
+      doc.text(`Take Home: $${takeHome.toFixed(2)}`, 14, 144);
       
       // Retirement savings section
       doc.setFontSize(14);
-      doc.text('Retirement Savings', 14, 144);
+      doc.text('Retirement Savings', 14, 158);
       doc.setFontSize(10);
-      doc.text(`Recommended Savings (${(retirementRate * 100).toFixed(0)}%): $${recommendedRetirement.toFixed(2)}`, 14, 152);
-      doc.text(`After Retirement Savings: $${afterRetirement.toFixed(2)}`, 14, 158);
+      doc.text(`Recommended Savings (${(retirementRate * 100).toFixed(0)}%): $${recommendedRetirement.toFixed(2)}`, 14, 166);
+      doc.text(`After Retirement Savings: $${afterRetirement.toFixed(2)}`, 14, 172);
       
       // Shifts table
       const tableData = filteredShifts.map(s => [
@@ -214,7 +219,7 @@ export default function Reports() {
       ]);
       
       autoTable(doc, {
-        startY: 170,
+        startY: 184,
         head: [['Date', 'Hours', 'Wage', 'Cash Tips', 'Credit Tips', 'Tip Out (%)', 'Total']],
         body: tableData,
         theme: 'grid',
@@ -341,6 +346,39 @@ export default function Reports() {
 
         <Card className="p-6">
           <h2 className="text-lg font-heading font-semibold mb-4">{t('reports.tax.title')}</h2>
+          
+          {/* Tax Disclaimer */}
+          <div className="mb-4 p-4 rounded-lg bg-muted border-l-4 border-destructive">
+            <p className="text-sm font-semibold text-foreground mb-2">
+              ⚠️ Important: Tax Estimates Disclaimer
+            </p>
+            <p className="text-xs text-muted-foreground mb-2">
+              <strong>This is a planning tool, not a tax filing tool.</strong> These estimates are simplified calculations for planning purposes only and are not suitable for tax filing.
+            </p>
+            <p className="text-xs text-muted-foreground mb-2">
+              These calculations do NOT account for:
+            </p>
+            <ul className="text-xs text-muted-foreground list-disc list-inside mb-2 space-y-1">
+              <li>Progressive tax brackets (actual brackets vary by income level)</li>
+              <li>Standard deductions, personal exemptions, or tax credits</li>
+              <li>Self-employment tax (if applicable)</li>
+              <li>Other income sources or deductions</li>
+            </ul>
+            <p className="text-xs text-muted-foreground">
+              <strong>Always consult a qualified tax professional</strong> or use official IRS tools for accurate tax calculations. Visit{' '}
+              <a 
+                href="https://www.irs.gov/individuals/tax-withholding-estimator" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+                data-testid="link-irs-calculator"
+              >
+                IRS Tax Withholding Estimator
+              </a>
+              {' '}or consult with a CPA.
+            </p>
+          </div>
+
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">{t('reports.tax.federal')} ({(federalTaxRate * 100).toFixed(1)}%)</span>
@@ -372,7 +410,7 @@ export default function Reports() {
           </div>
           {!user?.state && (
             <p className="text-xs text-muted-foreground mt-4">
-              Set your state in Profile to get accurate state tax estimates
+              Set your state in Profile to get more accurate state tax estimates
             </p>
           )}
         </Card>
