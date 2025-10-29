@@ -19,6 +19,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch('/api/auth/user/tax-settings', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { state, localTaxRate } = req.body;
+      
+      const currentUser = await storage.getUser(userId);
+      if (!currentUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const updatedUser = await storage.upsertUser({
+        ...currentUser,
+        state: state !== undefined ? state : currentUser.state,
+        localTaxRate: localTaxRate !== undefined ? localTaxRate.toString() : currentUser.localTaxRate,
+      });
+      
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating tax settings:", error);
+      res.status(500).json({ message: "Failed to update tax settings" });
+    }
+  });
+
   app.get('/api/jobs', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;

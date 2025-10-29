@@ -13,12 +13,13 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { format, startOfWeek, startOfMonth, startOfYear, endOfWeek, endOfMonth, endOfYear } from "date-fns";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { STATE_TAX_RATES, FEDERAL_TAX_RATE } from "@shared/taxRates";
 import type { Shift } from "@shared/schema";
 
 type Period = 'week' | 'month' | 'year';
 
 export default function Reports() {
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const { t } = useTranslation();
   const [period, setPeriod] = useState<Period>('month');
@@ -100,9 +101,9 @@ export default function Reports() {
   const totalHours = filteredShifts.reduce((sum, s) => sum + parseFloat(s.hoursWorked), 0);
   const avgPerHour = totalHours > 0 ? totalEarnings / totalHours : 0;
 
-  const federalTaxRate = 0.22;
-  const stateTaxRate = 0.05;
-  const localTaxRate = 0.02;
+  const federalTaxRate = FEDERAL_TAX_RATE;
+  const stateTaxRate = user?.state ? (STATE_TAX_RATES[user.state] || 0.05) : 0.05;
+  const localTaxRate = user?.localTaxRate ? parseFloat(user.localTaxRate) : 0.02;
 
   const federalTax = totalEarnings * federalTaxRate;
   const stateTax = totalEarnings * stateTaxRate;
@@ -181,9 +182,9 @@ export default function Reports() {
       doc.setFontSize(14);
       doc.text('Tax Estimates', 14, 100);
       doc.setFontSize(10);
-      doc.text(`Federal Tax (22%): $${federalTax.toFixed(2)}`, 14, 108);
-      doc.text(`State Tax (5%): $${stateTax.toFixed(2)}`, 14, 114);
-      doc.text(`Local Tax (2%): $${localTax.toFixed(2)}`, 14, 120);
+      doc.text(`Federal Tax (${(federalTaxRate * 100).toFixed(1)}%): $${federalTax.toFixed(2)}`, 14, 108);
+      doc.text(`State Tax (${(stateTaxRate * 100).toFixed(1)}%): $${stateTax.toFixed(2)}`, 14, 114);
+      doc.text(`Local Tax (${(localTaxRate * 100).toFixed(2)}%): $${localTax.toFixed(2)}`, 14, 120);
       doc.text(`Total Tax: $${totalTax.toFixed(2)}`, 14, 126);
       doc.text(`Take Home: $${takeHome.toFixed(2)}`, 14, 132);
       
@@ -314,15 +315,18 @@ export default function Reports() {
           <h2 className="text-lg font-heading font-semibold mb-4">{t('reports.tax.title')}</h2>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">{t('reports.tax.federal')} (22%)</span>
+              <span className="text-muted-foreground">{t('reports.tax.federal')} ({(federalTaxRate * 100).toFixed(1)}%)</span>
               <span className="font-semibold tabular-nums">${federalTax.toFixed(2)}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">{t('reports.tax.state')} (5%)</span>
+              <span className="text-muted-foreground">
+                {t('reports.tax.state')} ({(stateTaxRate * 100).toFixed(1)}%)
+                {user?.state && <span className="ml-1 text-xs">({user.state})</span>}
+              </span>
               <span className="font-semibold tabular-nums">${stateTax.toFixed(2)}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-muted-foreground">{t('reports.tax.local')} (2%)</span>
+              <span className="text-muted-foreground">{t('reports.tax.local')} ({(localTaxRate * 100).toFixed(2)}%)</span>
               <span className="font-semibold tabular-nums">${localTax.toFixed(2)}</span>
             </div>
             <div className="pt-3 border-t border-border flex justify-between items-center">
@@ -338,6 +342,11 @@ export default function Reports() {
               </span>
             </div>
           </div>
+          {!user?.state && (
+            <p className="text-xs text-muted-foreground mt-4">
+              Set your state in Profile to get accurate state tax estimates
+            </p>
+          )}
         </Card>
 
         {chartData.length > 0 && (
