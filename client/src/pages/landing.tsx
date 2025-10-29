@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DollarSign, TrendingUp, FileText, Calculator } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 
 export default function Landing() {
@@ -31,7 +32,7 @@ export default function Landing() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <h1 className="text-2xl font-heading font-bold text-primary">
@@ -41,7 +42,7 @@ export default function Landing() {
         </div>
       </header>
 
-      <main className="pt-16">
+      <main className="pt-16 flex-1">
         <section className="container max-w-6xl mx-auto px-4 py-20 md:py-32">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6 leading-tight">
@@ -89,6 +90,8 @@ export default function Landing() {
           </div>
         </section>
       </main>
+      
+      <Footer isAuthenticated={false} />
     </div>
   );
 }

@@ -431,7 +431,7 @@ export default function Reports() {
         )}
       </main>
 
-      <Footer />
+      <Footer isAuthenticated={true} />
       <BottomNav />
     </div>
   );

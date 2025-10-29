@@ -692,7 +692,7 @@ export default function Profile() {
         </DialogContent>
       </Dialog>
 
-      <Footer />
+      <Footer isAuthenticated={true} />
       <BottomNav />
     </div>
   );

@@ -284,7 +284,7 @@ export default function Jobs() {
         </DialogContent>
       </Dialog>
 
-      <Footer />
+      <Footer isAuthenticated={true} />
       <BottomNav />
     </div>
   );

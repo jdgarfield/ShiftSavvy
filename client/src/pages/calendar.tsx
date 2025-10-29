@@ -197,7 +197,7 @@ export default function Calendar() {
         </Card>
       </main>
 
-      <Footer />
+      <Footer isAuthenticated={true} />
       <BottomNav />
     </div>
   );

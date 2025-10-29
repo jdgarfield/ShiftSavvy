@@ -233,7 +233,7 @@ export default function Dashboard() {
         </div>
       </main>
 
-      <Footer />
+      <Footer isAuthenticated={true} />
       <BottomNav />
     </div>
   );

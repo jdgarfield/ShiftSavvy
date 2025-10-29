@@ -381,7 +381,7 @@ export default function ShiftForm() {
         </form>
       </main>
       
-      <Footer />
+      <Footer isAuthenticated={true} />
     </div>
   );
 }

@@ -7,24 +7,36 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
-export function Footer() {
+interface FooterProps {
+  isAuthenticated?: boolean;
+}
+
+export function Footer({ isAuthenticated = false }: FooterProps) {
   const { i18n } = useTranslation();
   const { toast } = useToast();
 
   const changeLanguage = useMutation({
     mutationFn: async (lng: string) => {
       await i18n.changeLanguage(lng);
-      return await apiRequest('PATCH', '/api/auth/user/profile', { language: lng });
+      // Only save to server if user is authenticated
+      if (isAuthenticated) {
+        return await apiRequest('PATCH', '/api/auth/user/profile', { language: lng });
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+      if (isAuthenticated) {
+        queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+      }
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update language preference",
-        variant: "destructive",
-      });
+      // Only show error toast for authenticated users
+      if (isAuthenticated) {
+        toast({
+          title: "Error",
+          description: "Failed to update language preference",
+          variant: "destructive",
+        });
+      }
     },
   });
 
