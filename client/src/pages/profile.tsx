@@ -349,8 +349,6 @@ export default function Profile() {
         </div>
       </header>
 
-      <BottomNav />
-
       <main className="container max-w-screen-md mx-auto px-4 py-6 space-y-6">
         {/* Profile Card */}
         <Card className="p-6">
@@ -694,6 +692,7 @@ export default function Profile() {
         </DialogContent>
       </Dialog>
 
+      <BottomNav />
       <Footer isAuthenticated={true} />
     </div>
   );

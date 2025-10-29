@@ -149,8 +149,6 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <BottomNav />
-
       <main className="container max-w-screen-md mx-auto px-4 py-6 space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <StatCard
@@ -235,6 +233,7 @@ export default function Dashboard() {
         </div>
       </main>
 
+      <BottomNav />
       <Footer isAuthenticated={true} />
     </div>
   );

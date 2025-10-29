@@ -174,8 +174,6 @@ export default function Jobs() {
         </div>
       </header>
 
-      <BottomNav />
-
       <main className="container max-w-screen-md mx-auto px-4 py-6">
         {jobs.length === 0 ? (
           <Card className="p-12 text-center">
@@ -286,6 +284,7 @@ export default function Jobs() {
         </DialogContent>
       </Dialog>
 
+      <BottomNav />
       <Footer isAuthenticated={true} />
     </div>
   );

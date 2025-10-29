@@ -105,8 +105,6 @@ export default function Calendar() {
         </div>
       </header>
 
-      <BottomNav />
-
       <main className="container max-w-screen-md mx-auto px-4 py-6 space-y-6">
         <Card className="p-4">
           {/* Weekday headers */}
@@ -199,6 +197,7 @@ export default function Calendar() {
         </Card>
       </main>
 
+      <BottomNav />
       <Footer isAuthenticated={true} />
     </div>
   );
