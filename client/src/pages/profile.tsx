@@ -13,8 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { LogOut, Globe, Moon, DollarSign, Building2, Plus, Edit, Trash2, User as UserIcon, Camera } from "lucide-react";
-import { useTheme } from "@/components/ThemeProvider";
+import { LogOut, Globe, DollarSign, Building2, Plus, Edit, Trash2, User as UserIcon, Camera } from "lucide-react";
 import type { Employer } from "@shared/schema";
 
 const US_STATES = [
@@ -41,7 +40,6 @@ export default function Profile() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
-  const { theme, setTheme } = useTheme();
   const queryClient = useQueryClient();
   
   const [state, setState] = useState(user?.state || '');
@@ -384,6 +382,9 @@ export default function Profile() {
               <p className="text-muted-foreground text-sm">{user?.email}</p>
               {username && <p className="text-muted-foreground text-sm">@{username}</p>}
               {zipCode && <p className="text-muted-foreground text-sm">{zipCode}</p>}
+              <p className="text-muted-foreground text-sm">Language: {i18n.language === 'en' ? 'English' : 'Español'}</p>
+              {state && <p className="text-muted-foreground text-sm">Tax State: {US_STATES.find(s => s.code === state)?.name}</p>}
+              {localTaxRate && <p className="text-muted-foreground text-sm">Local Tax Rate: {localTaxRate}%</p>}
               {!isEditingProfile && (
                 <button
                   onClick={() => setIsEditingProfile(true)}
@@ -447,14 +448,80 @@ export default function Profile() {
                 />
               </div>
 
+              <div>
+                <Label className="flex items-center gap-2 mb-2">
+                  <Globe className="h-4 w-4" />
+                  Language
+                </Label>
+                <Select
+                  value={i18n.language}
+                  onValueChange={handleLanguageChange}
+                >
+                  <SelectTrigger data-testid="select-language">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="es">Español</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="pt-2 border-t">
+                <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                  <DollarSign className="h-4 w-4" />
+                  Tax Settings
+                </h4>
+                
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="state" className="mb-2">State</Label>
+                    <Select
+                      value={state}
+                      onValueChange={setState}
+                    >
+                      <SelectTrigger id="state" data-testid="select-state">
+                        <SelectValue placeholder="Select your state" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {US_STATES.map(s => (
+                          <SelectItem key={s.code} value={s.code}>{s.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="localTaxRate" className="mb-2">Local Tax Rate (%)</Label>
+                    <Input
+                      id="localTaxRate"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="20"
+                      placeholder="2.00"
+                      value={localTaxRate}
+                      onChange={(e) => setLocalTaxRate(e.target.value)}
+                      data-testid="input-local-tax-rate"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Enter as percentage (e.g., 2.00 for 2%)
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex gap-2">
                 <Button
-                  onClick={handleSaveProfile}
-                  disabled={updateProfileMutation.isPending}
+                  onClick={() => {
+                    handleSaveProfile();
+                    handleSaveTaxSettings();
+                  }}
+                  disabled={updateProfileMutation.isPending || updateTaxSettingsMutation.isPending}
                   data-testid="button-save-profile"
                   className="flex-1 hover-elevate active-elevate-2"
                 >
-                  {updateProfileMutation.isPending ? 'Saving...' : 'Save Profile'}
+                  {updateProfileMutation.isPending || updateTaxSettingsMutation.isPending ? 'Saving...' : 'Save Profile'}
                 </Button>
                 <Button
                   variant="outline"
@@ -464,6 +531,8 @@ export default function Profile() {
                     setLastName(user?.lastName || '');
                     setUsername(user?.username || '');
                     setZipCode(user?.zipCode || '');
+                    setState(user?.state || '');
+                    setLocalTaxRate(user?.localTaxRate ? (parseFloat(user.localTaxRate) * 100).toFixed(2) : '');
                   }}
                   data-testid="button-cancel-profile"
                   className="hover-elevate active-elevate-2"
@@ -548,104 +617,6 @@ export default function Profile() {
               ))}
             </div>
           )}
-        </Card>
-
-        {/* Settings Card */}
-        <Card className="p-6 space-y-4">
-          <h3 className="text-lg font-heading font-semibold mb-4">{t('profile.settings')}</h3>
-
-          <div>
-            <Label className="flex items-center gap-2 mb-2">
-              <Globe className="h-4 w-4" />
-              {t('profile.language')}
-            </Label>
-            <Select
-              value={i18n.language}
-              onValueChange={handleLanguageChange}
-            >
-              <SelectTrigger data-testid="select-language">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="en">English</SelectItem>
-                <SelectItem value="es">Español</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label className="flex items-center gap-2 mb-2">
-              <Moon className="h-4 w-4" />
-              {t('profile.theme')}
-            </Label>
-            <Select
-              value={theme}
-              onValueChange={(value: 'light' | 'dark') => setTheme(value)}
-            >
-              <SelectTrigger data-testid="select-theme">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="light">{t('profile.light')}</SelectItem>
-                <SelectItem value="dark">{t('profile.dark')}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </Card>
-
-        {/* Tax Settings Card */}
-        <Card className="p-6 space-y-4">
-          <h3 className="text-lg font-heading font-semibold mb-4 flex items-center gap-2">
-            <DollarSign className="h-5 w-5" />
-            Tax Settings
-          </h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            Set your state and local tax rate for accurate tax estimates on your earnings.
-          </p>
-
-          <div>
-            <Label htmlFor="state" className="mb-2">State</Label>
-            <Select
-              value={state}
-              onValueChange={setState}
-            >
-              <SelectTrigger id="state" data-testid="select-state">
-                <SelectValue placeholder="Select your state" />
-              </SelectTrigger>
-              <SelectContent>
-                {US_STATES.map(s => (
-                  <SelectItem key={s.code} value={s.code}>{s.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label htmlFor="localTaxRate" className="mb-2">Local Tax Rate (%)</Label>
-            <Input
-              id="localTaxRate"
-              type="number"
-              step="0.01"
-              min="0"
-              max="20"
-              placeholder="2.00"
-              value={localTaxRate}
-              onChange={(e) => setLocalTaxRate(e.target.value)}
-              data-testid="input-local-tax-rate"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Enter as percentage (e.g., 2.00 for 2%)
-            </p>
-          </div>
-
-          <Button
-            onClick={handleSaveTaxSettings}
-            disabled={updateTaxSettingsMutation.isPending}
-            data-testid="button-save-tax-settings"
-            className="w-full hover-elevate active-elevate-2"
-          >
-            {updateTaxSettingsMutation.isPending ? 'Saving...' : 'Save Tax Settings'}
-          </Button>
         </Card>
 
         <Button

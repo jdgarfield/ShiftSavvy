@@ -13,10 +13,12 @@ ShiftSavvy is a mobile-first Progressive Web App (PWA) designed for service indu
   - Collapsible profile editor with summary view
   - Permanent username (cannot be changed once set)
   - Editable personal information (first name, last name, zip code)
+  - Integrated language selection (English/Spanish)
+  - Integrated tax settings (state and local tax rate)
 - Multiple employer tracking (business name, address, contact info)
 - Offline-capable PWA with service worker
 - Internationalization support (i18n)
-- Theme switching (light/dark mode)
+- Theme switching (light/dark mode via header toggle)
 
 ## User Preferences
 
