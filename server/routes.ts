@@ -203,9 +203,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (validated.zipCode !== undefined) {
         updates.zipCode = validated.zipCode.trim() || null;
       }
-      if (validated.profileImageUrl !== undefined) {
-        updates.profileImageUrl = validated.profileImageUrl.trim() || null;
-      }
       
       const updatedUser = await storage.updateUserProfile(userId, updates);
       res.json(updatedUser);

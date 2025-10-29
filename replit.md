@@ -9,7 +9,7 @@ ShiftSavvy is a mobile-first Progressive Web App (PWA) designed for service indu
 - Visual analytics with charts and statistical summaries
 - Tax estimation capabilities (federal, state, local)
 - CSV/PDF export for tax filing
-- User profile management with image upload (base64, max 75KB)
+- User profile management
   - Collapsible profile editor with summary view
   - Permanent username (cannot be changed once set)
   - Editable personal information (first name, last name, zip code)
@@ -87,7 +87,7 @@ Preferred communication style: Simple, everyday language.
 - Schema located in `shared/schema.ts` for client/server sharing
 
 **Schema Design:**
-- `users` - User profiles with tax settings (state, localTaxRate), profile data (username, zipCode, profileImageUrl)
+- `users` - User profiles with tax settings (state, localTaxRate), profile data (username, zipCode)
 - `jobs` - Multiple workplaces per user (name, description, color, hourly wage)
 - `shifts` - Individual work shifts linked to jobs (date, hours, tips, tip-outs)
 - `employers` - Employer information (businessName, address, phone, managerName, managerPhone)
@@ -153,7 +153,7 @@ Preferred communication style: Simple, everyday language.
 **Key Schemas:**
 - `insertJobSchema` - Job creation/update validation
 - `insertShiftSchema` - Shift creation/update validation
-- `updateProfileSchema` - Profile update validation (firstName, lastName, username, zipCode, profileImageUrl)
+- `updateProfileSchema` - Profile update validation (firstName, lastName, username, zipCode)
 - `insertEmployerSchema` - Employer creation/update validation (businessName required, min 1 char)
 - Type inference from schemas for TypeScript safety
 

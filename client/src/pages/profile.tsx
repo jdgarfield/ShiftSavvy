@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { LogOut, Globe, DollarSign, Building2, Plus, Edit, Trash2, User as UserIcon, Camera } from "lucide-react";
+import { LogOut, Globe, DollarSign, Building2, Plus, Edit, Trash2 } from "lucide-react";
 import type { Employer } from "@shared/schema";
 
 const US_STATES = [
@@ -50,7 +50,6 @@ export default function Profile() {
   const [lastName, setLastName] = useState(user?.lastName || '');
   const [username, setUsername] = useState(user?.username || '');
   const [zipCode, setZipCode] = useState(user?.zipCode || '');
-  const [profileImageUrl, setProfileImageUrl] = useState(user?.profileImageUrl || '');
 
   // Profile edit mode state
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -90,7 +89,6 @@ export default function Profile() {
       setLastName(user.lastName || '');
       setUsername(user.username || '');
       setZipCode(user.zipCode || '');
-      setProfileImageUrl(user.profileImageUrl || '');
       setState(user.state || '');
       setLocalTaxRate(user.localTaxRate ? (parseFloat(user.localTaxRate) * 100).toFixed(2) : '');
       
@@ -145,7 +143,7 @@ export default function Profile() {
   });
 
   const updateProfileMutation = useMutation({
-    mutationFn: async (data: { firstName: string; lastName: string; username: string; zipCode: string; profileImageUrl: string }) => {
+    mutationFn: async (data: { firstName: string; lastName: string; username: string; zipCode: string }) => {
       return await apiRequest('PATCH', '/api/auth/user/profile', data);
     },
     onSuccess: () => {
@@ -247,40 +245,8 @@ export default function Profile() {
       lastName,
       username,
       zipCode,
-      profileImageUrl,
     });
     setIsEditingProfile(false);
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Check file size (max 75KB to stay under 100KB base64)
-      if (file.size > 75 * 1024) {
-        toast({
-          title: "Image too large",
-          description: "Please select an image smaller than 75KB",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Check file type
-      if (!file.type.startsWith('image/')) {
-        toast({
-          title: "Invalid file type",
-          description: "Please select an image file",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImageUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const resetEmployerForm = () => {
@@ -354,25 +320,11 @@ export default function Profile() {
         {/* Profile Card */}
         <Card className="p-6">
           <div className="flex items-start gap-4 mb-6">
-            <div className="relative">
-              <Avatar className="h-20 w-20">
-                <AvatarImage src={profileImageUrl || ''} />
-                <AvatarFallback className="text-2xl font-heading bg-primary text-primary-foreground">
-                  {getInitials()}
-                </AvatarFallback>
-              </Avatar>
-              <label htmlFor="profile-image" className="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-1.5 cursor-pointer hover-elevate active-elevate-2">
-                <Camera className="h-3 w-3" />
-                <input
-                  id="profile-image"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageUpload}
-                  data-testid="input-profile-image"
-                />
-              </label>
-            </div>
+            <Avatar className="h-20 w-20">
+              <AvatarFallback className="text-2xl font-heading bg-primary text-primary-foreground">
+                {getInitials()}
+              </AvatarFallback>
+            </Avatar>
             <div className="flex-1">
               <h2 className="text-xl font-heading font-semibold mb-1">
                 {firstName || lastName
