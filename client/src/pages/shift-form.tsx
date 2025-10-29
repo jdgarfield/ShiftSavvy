@@ -18,7 +18,16 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Footer } from "@/components/Footer";
 import { BottomNav } from "@/components/BottomNav";
 import { ArrowLeft, Save, Trash } from "lucide-react";
-import { insertShiftSchema, type InsertShift, type Job, type Shift, type Employer } from "@shared/schema";
+import { insertShiftSchema, type InsertShift, type Shift, type Employer } from "@shared/schema";
+
+// Predefined job options
+const JOB_OPTIONS = [
+  "Bartender",
+  "Server",
+  "Host",
+  "Busser",
+  "Expo"
+] as const;
 
 export default function ShiftForm() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
@@ -43,11 +52,6 @@ export default function ShiftForm() {
     }
   }, [isAuthenticated, authLoading, toast]);
 
-  const { data: jobs = [], isLoading: jobsLoading } = useQuery<Job[]>({
-    queryKey: ["/api/jobs"],
-    enabled: isAuthenticated,
-  });
-
   const { data: employers = [] } = useQuery<Employer[]>({
     queryKey: ["/api/employers"],
     enabled: isAuthenticated,
@@ -61,7 +65,7 @@ export default function ShiftForm() {
   const form = useForm<InsertShift>({
     resolver: zodResolver(insertShiftSchema),
     defaultValues: {
-      jobId: "",
+      jobTitle: "",
       employerId: "none",
       date: new Date().toISOString().split('T')[0],
       hoursWorked: 0,
@@ -76,7 +80,7 @@ export default function ShiftForm() {
   useEffect(() => {
     if (shift) {
       form.reset({
-        jobId: shift.jobId,
+        jobTitle: shift.jobTitle,
         employerId: shift.employerId || "none",
         date: shift.date,
         hoursWorked: parseFloat(shift.hoursWorked),
@@ -215,25 +219,24 @@ export default function ShiftForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <Card className="p-6 space-y-6">
             <div>
-              <Label htmlFor="jobId">{t('shift.job')} *</Label>
+              <Label htmlFor="jobTitle">{t('shift.job')} *</Label>
               <Select
-                value={form.watch("jobId")}
-                onValueChange={(value) => form.setValue("jobId", value)}
-                disabled={jobs.length === 0}
+                value={form.watch("jobTitle")}
+                onValueChange={(value) => form.setValue("jobTitle", value)}
               >
-                <SelectTrigger id="jobId" data-testid="select-job" className="mt-2">
-                  <SelectValue placeholder={jobs.length === 0 ? "No jobs available" : t('shift.selectJob')} />
+                <SelectTrigger id="jobTitle" data-testid="select-job" className="mt-2">
+                  <SelectValue placeholder={t('shift.selectJob')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {jobs.map((job) => (
-                    <SelectItem key={job.id} value={job.id} data-testid={`job-option-${job.id}`}>
-                      {job.name}
+                  {JOB_OPTIONS.map((job) => (
+                    <SelectItem key={job} value={job} data-testid={`job-option-${job.toLowerCase()}`}>
+                      {job}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              {form.formState.errors.jobId && (
-                <p className="text-sm text-destructive mt-1">{form.formState.errors.jobId.message}</p>
+              {form.formState.errors.jobTitle && (
+                <p className="text-sm text-destructive mt-1">{form.formState.errors.jobTitle.message}</p>
               )}
             </div>
 
