@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Save, Trash } from "lucide-react";
-import { insertShiftSchema, type InsertShift, type Job, type Shift } from "@shared/schema";
+import { insertShiftSchema, type InsertShift, type Job, type Shift, type Employer } from "@shared/schema";
 
 export default function ShiftForm() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
@@ -43,6 +43,11 @@ export default function ShiftForm() {
 
   const { data: jobs = [], isLoading: jobsLoading } = useQuery<Job[]>({
     queryKey: ["/api/jobs"],
+    enabled: isAuthenticated,
+  });
+
+  const { data: employers = [] } = useQuery<Employer[]>({
+    queryKey: ["/api/employers"],
     enabled: isAuthenticated,
   });
 
@@ -105,6 +110,7 @@ export default function ShiftForm() {
     resolver: zodResolver(insertShiftSchema),
     defaultValues: {
       jobId: "",
+      employerId: "",
       date: new Date().toISOString().split('T')[0],
       hoursWorked: 0,
       hourlyWage: 0,
@@ -120,6 +126,7 @@ export default function ShiftForm() {
     if (shift) {
       form.reset({
         jobId: shift.jobId,
+        employerId: shift.employerId || "",
         date: shift.date,
         hoursWorked: parseFloat(shift.hoursWorked),
         hourlyWage: parseFloat(shift.hourlyWage),
@@ -287,6 +294,26 @@ export default function ShiftForm() {
             </div>
 
             <div>
+              <Label htmlFor="employerId">Employer</Label>
+              <Select
+                value={form.watch("employerId") || ""}
+                onValueChange={(value) => form.setValue("employerId", value || undefined)}
+              >
+                <SelectTrigger id="employerId" data-testid="select-employer" className="mt-2">
+                  <SelectValue placeholder={employers.length === 0 ? "No employers added" : "Select employer (optional)"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  {employers.map((employer) => (
+                    <SelectItem key={employer.id} value={employer.id} data-testid={`employer-option-${employer.id}`}>
+                      {employer.businessName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
               <Label htmlFor="date">{t('shift.date')} *</Label>
               <Input
                 id="date"
@@ -371,15 +398,21 @@ export default function ShiftForm() {
               </div>
 
               <div>
-                <Label htmlFor="tipOut">{t('shift.tipOut')}</Label>
+                <Label htmlFor="tipOut">Tip Out (%)</Label>
                 <Input
                   id="tipOut"
                   type="number"
                   step="0.01"
+                  min="0"
+                  max="100"
+                  placeholder="0.00"
                   data-testid="input-tip-out"
                   {...form.register("tipOut")}
                   className="mt-2"
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Percentage of tips shared with others
+                </p>
               </div>
             </div>
 
