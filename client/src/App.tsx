@@ -50,7 +50,7 @@ function Router() {
           <Route path="/reports" component={Reports} />
           <Route path="/profile" component={Profile} />
           <Route path="/calendar" component={Calendar} />
-          <Route component={NotFound} />
+          <Route path="/:rest*" component={NotFound} />
         </>
       )}
     </Switch>
