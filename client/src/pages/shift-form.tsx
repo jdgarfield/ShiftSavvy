@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -26,6 +26,7 @@ export default function ShiftForm() {
 
   const shiftId = params?.id === 'new' ? null : params?.id;
   const isEditing = !!shiftId;
+  const [hasAttemptedCreate, setHasAttemptedCreate] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -62,17 +63,21 @@ export default function ShiftForm() {
       queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
       toast({
         title: t('common.success'),
-        description: "Preset jobs created successfully!",
+        description: "Preset jobs created! Select one to continue.",
       });
     },
     onError: (error: Error) => {
-      toast({
-        title: t('common.error'),
-        description: error.message,
-        variant: "destructive",
-      });
+      console.error("Error creating preset jobs:", error);
     },
   });
+
+  // Auto-create preset jobs on first visit if none exist
+  useEffect(() => {
+    if (isAuthenticated && !jobsLoading && jobs.length === 0 && !hasAttemptedCreate && !createPresetJobsMutation.isPending) {
+      setHasAttemptedCreate(true);
+      createPresetJobsMutation.mutate();
+    }
+  }, [isAuthenticated, jobsLoading, jobs.length, hasAttemptedCreate, createPresetJobsMutation]);
 
   const { data: shift } = useQuery<Shift>({
     queryKey: ["/api/shifts", shiftId],
@@ -230,31 +235,11 @@ export default function ShiftForm() {
       </header>
 
       <main className="container max-w-screen-md mx-auto px-4 py-6">
-        {jobs.length === 0 && !jobsLoading && (
+        {createPresetJobsMutation.isPending && (
           <Card className="p-6 mb-6 bg-muted">
-            <p className="text-sm font-medium mb-2">No jobs yet!</p>
-            <p className="text-sm text-muted-foreground mb-4">
-              Let's quickly set up the common restaurant positions for you.
-            </p>
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                onClick={() => createPresetJobsMutation.mutate()}
-                data-testid="button-create-preset-jobs"
-                className="hover-elevate active-elevate-2"
-                disabled={createPresetJobsMutation.isPending}
-              >
-                {createPresetJobsMutation.isPending ? "Creating..." : "Create Preset Jobs"}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setLocation("/jobs")}
-                data-testid="button-go-to-jobs"
-                className="hover-elevate active-elevate-2"
-              >
-                Manage Jobs
-              </Button>
+            <div className="flex items-center gap-3">
+              <div className="animate-spin h-5 w-5 border-2 border-primary border-t-transparent rounded-full"></div>
+              <p className="text-sm font-medium">Setting up your jobs...</p>
             </div>
           </Card>
         )}
