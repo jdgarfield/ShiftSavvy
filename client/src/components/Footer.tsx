@@ -1,6 +1,7 @@
 import { Mail, MapPin, Shield } from "lucide-react";
 import { SiInstagram, SiFacebook, SiTiktok } from "react-icons/si";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useMutation } from "@tanstack/react-query";
@@ -50,6 +51,7 @@ export function Footer() {
             <a 
               href="mailto:contact@shiftsavvy.app" 
               className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+              data-testid="link-footer-contact"
             >
               <Mail className="h-4 w-4" aria-hidden="true" /> Contact Us
             </a>
@@ -59,10 +61,10 @@ export function Footer() {
           <nav aria-label="Product" className="space-y-4">
             <h3 className="text-sm font-semibold text-foreground">Product</h3>
             <ul className="space-y-3 text-sm">
-              <li><a className="text-muted-foreground hover:text-foreground transition-colors" href="/">Dashboard</a></li>
-              <li><a className="text-muted-foreground hover:text-foreground transition-colors" href="/calendar">Calendar</a></li>
-              <li><a className="text-muted-foreground hover:text-foreground transition-colors" href="/reports">Reports</a></li>
-              <li><a className="text-muted-foreground hover:text-foreground transition-colors" href="/jobs">Jobs</a></li>
+              <li><Link className="text-muted-foreground hover:text-foreground transition-colors" href="/" data-testid="link-footer-dashboard">Dashboard</Link></li>
+              <li><Link className="text-muted-foreground hover:text-foreground transition-colors" href="/calendar" data-testid="link-footer-calendar">Calendar</Link></li>
+              <li><Link className="text-muted-foreground hover:text-foreground transition-colors" href="/reports" data-testid="link-footer-reports">Reports</Link></li>
+              <li><Link className="text-muted-foreground hover:text-foreground transition-colors" href="/jobs" data-testid="link-footer-jobs">Jobs</Link></li>
             </ul>
           </nav>
 
@@ -70,9 +72,9 @@ export function Footer() {
           <nav aria-label="Legal" className="space-y-4">
             <h3 className="text-sm font-semibold text-foreground">Legal</h3>
             <ul className="space-y-3 text-sm">
-              <li><a className="text-muted-foreground hover:text-foreground transition-colors" href="/legal/terms">Terms of Service</a></li>
-              <li><a className="text-muted-foreground hover:text-foreground transition-colors" href="/legal/privacy">Privacy Policy</a></li>
-              <li><a className="text-muted-foreground hover:text-foreground transition-colors" href="/legal/security">Security</a></li>
+              <li><a className="text-muted-foreground hover:text-foreground transition-colors" href="/legal/terms" data-testid="link-footer-terms">Terms of Service</a></li>
+              <li><a className="text-muted-foreground hover:text-foreground transition-colors" href="/legal/privacy" data-testid="link-footer-privacy">Privacy Policy</a></li>
+              <li><a className="text-muted-foreground hover:text-foreground transition-colors" href="/legal/security" data-testid="link-footer-security">Security</a></li>
             </ul>
           </nav>
 
@@ -129,6 +131,7 @@ export function Footer() {
               href="https://instagram.com/shiftsavvy"
               target="_blank"
               rel="noopener noreferrer"
+              data-testid="link-footer-instagram"
             >
               <SiInstagram className="h-4 w-4" />
             </a>
@@ -138,6 +141,7 @@ export function Footer() {
               href="https://tiktok.com/@shiftsavvy"
               target="_blank"
               rel="noopener noreferrer"
+              data-testid="link-footer-tiktok"
             >
               <SiTiktok className="h-4 w-4" />
             </a>
@@ -147,6 +151,7 @@ export function Footer() {
               href="https://facebook.com/shiftsavvy"
               target="_blank"
               rel="noopener noreferrer"
+              data-testid="link-footer-facebook"
             >
               <SiFacebook className="h-4 w-4" />
             </a>
