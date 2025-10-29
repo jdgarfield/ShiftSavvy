@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import logoUrl from "@assets/Image Horizontal - 150_1761766859354.png";
 
 interface FooterProps {
   isAuthenticated?: boolean;
@@ -49,10 +50,12 @@ export function Footer({ isAuthenticated = false }: FooterProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand / Blurb */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-primary" aria-hidden="true" />
-              <span className="text-xl font-heading font-bold text-primary">ShiftSavvy</span>
-            </div>
+            <img 
+              src={logoUrl} 
+              alt="ShiftSavvy" 
+              className="h-8"
+              data-testid="logo-footer"
+            />
             <p className="text-sm text-muted-foreground">
               Tools for tipped pros to track earnings, shifts, and taxes—clearly and securely.
             </p>

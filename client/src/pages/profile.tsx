@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { LogOut, Globe, DollarSign, Building2, Plus, Edit, Trash2, ArrowLeft } from "lucide-react";
 import type { Employer } from "@shared/schema";
 import { useLocation } from "wouter";
+import logoUrl from "@assets/Image Horizontal - 150_1761766859354.png";
 
 const US_STATES = [
   { code: 'AL', name: 'Alabama' }, { code: 'AK', name: 'Alaska' }, { code: 'AZ', name: 'Arizona' },
@@ -377,7 +378,12 @@ export default function Profile() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
+              <img 
+                src={logoUrl} 
+                alt="ShiftSavvy" 
+                className="h-8"
+                data-testid="logo-header"
+              />
               <p className="text-xs text-muted-foreground">{t('profile.title')}</p>
             </div>
           </div>

@@ -17,6 +17,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { STATE_TAX_RATES, FEDERAL_TAX_RATE } from "@shared/taxRates";
 import type { Shift } from "@shared/schema";
+import logoUrl from "@assets/Image Horizontal - 150_1761766859354.png";
 
 type Period = 'week' | 'month' | 'year';
 
@@ -259,7 +260,12 @@ export default function Reports() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
+              <img 
+                src={logoUrl} 
+                alt="ShiftSavvy" 
+                className="h-8"
+                data-testid="logo-header"
+              />
               <p className="text-xs text-muted-foreground">{t('reports.title')}</p>
             </div>
           </div>

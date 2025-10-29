@@ -19,6 +19,7 @@ import { Footer } from "@/components/Footer";
 import { BottomNav } from "@/components/BottomNav";
 import { ArrowLeft, Save, Trash } from "lucide-react";
 import { insertShiftSchema, type InsertShift, type Shift, type Employer } from "@shared/schema";
+import logoUrl from "@assets/Image Horizontal - 150_1761766859354.png";
 
 // Predefined job options
 const JOB_OPTIONS = [
@@ -195,7 +196,12 @@ export default function ShiftForm() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
+              <img 
+                src={logoUrl} 
+                alt="ShiftSavvy" 
+                className="h-8"
+                data-testid="logo-header"
+              />
               <p className="text-xs text-muted-foreground">
                 {isEditing ? t('shift.edit') : t('shift.add')} • v3
               </p>
