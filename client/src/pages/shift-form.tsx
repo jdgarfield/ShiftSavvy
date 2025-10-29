@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { ArrowLeft, Save, Trash } from "lucide-react";
 import { insertShiftSchema, type InsertShift, type Job, type Shift, type Employer } from "@shared/schema";
 
@@ -116,7 +117,6 @@ export default function ShiftForm() {
       hourlyWage: 0,
       cashTips: 0,
       creditTips: 0,
-      coversServed: 0,
       tipOut: 0,
       notes: "",
     },
@@ -132,7 +132,6 @@ export default function ShiftForm() {
         hourlyWage: parseFloat(shift.hourlyWage),
         cashTips: parseFloat(shift.cashTips || '0'),
         creditTips: parseFloat(shift.creditTips || '0'),
-        coversServed: shift.coversServed || 0,
         tipOut: parseFloat(shift.tipOut || '0'),
         notes: shift.notes || "",
       });
@@ -243,18 +242,21 @@ export default function ShiftForm() {
               </p>
             </div>
           </div>
-          {isEditing && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => deleteMutation.mutate()}
-              data-testid="button-delete-shift"
-              className="text-destructive hover-elevate active-elevate-2"
-              disabled={deleteMutation.isPending}
-            >
-              <Trash className="h-5 w-5" />
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            {isEditing && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => deleteMutation.mutate()}
+                data-testid="button-delete-shift"
+                className="text-destructive hover-elevate active-elevate-2"
+                disabled={deleteMutation.isPending}
+              >
+                <Trash className="h-5 w-5" />
+              </Button>
+            )}
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -385,35 +387,22 @@ export default function ShiftForm() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="coversServed">{t('shift.covers')}</Label>
-                <Input
-                  id="coversServed"
-                  type="number"
-                  data-testid="input-covers"
-                  {...form.register("coversServed")}
-                  className="mt-2"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="tipOut">Tip Out (%)</Label>
-                <Input
-                  id="tipOut"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="100"
-                  placeholder="0.00"
-                  data-testid="input-tip-out"
-                  {...form.register("tipOut")}
-                  className="mt-2"
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Percentage of tips shared with others
-                </p>
-              </div>
+            <div>
+              <Label htmlFor="tipOut">Tip Out (%)</Label>
+              <Input
+                id="tipOut"
+                type="number"
+                step="0.01"
+                min="0"
+                max="100"
+                placeholder="0.00"
+                data-testid="input-tip-out"
+                {...form.register("tipOut")}
+                className="mt-2"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Percentage of tips shared with others
+              </p>
             </div>
 
             <div>
