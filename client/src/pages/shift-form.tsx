@@ -27,7 +27,6 @@ export default function ShiftForm() {
 
   const shiftId = params?.id === 'new' ? null : params?.id;
   const isEditing = !!shiftId;
-  const [hasAttemptedCreate, setHasAttemptedCreate] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -51,56 +50,6 @@ export default function ShiftForm() {
     queryKey: ["/api/employers"],
     enabled: isAuthenticated,
   });
-
-  const createPresetJobsMutation = useMutation({
-    mutationFn: async (currentJobs: Job[]) => {
-      const presetJobs = ['Server', 'Bartender', 'Expo', 'Busser', 'Host'];
-      const existingJobNames = currentJobs.map(j => j.name);
-      const jobsToCreate = presetJobs.filter(name => !existingJobNames.includes(name));
-      
-      if (jobsToCreate.length === 0) {
-        return [];
-      }
-
-      const results = [];
-      for (const name of jobsToCreate) {
-        try {
-          const result = await apiRequest('POST', '/api/jobs', {
-            name,
-            description: '',
-            color: '#3B82F6',
-            isActive: 1,
-          });
-          results.push(result);
-        } catch (error) {
-          console.error(`Error creating job ${name}:`, error);
-        }
-      }
-      return results;
-    },
-    onSuccess: (results) => {
-      if (results.length > 0) {
-        queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
-      }
-    },
-    onError: (error: Error) => {
-      console.error("Error creating preset jobs:", error);
-    },
-  });
-
-  // Auto-create missing preset jobs whenever we visit and jobs are loaded
-  useEffect(() => {
-    if (isAuthenticated && !jobsLoading && !hasAttemptedCreate && !createPresetJobsMutation.isPending) {
-      const presetJobs = ['Server', 'Bartender', 'Expo', 'Busser', 'Host'];
-      const existingJobNames = jobs.map(j => j.name);
-      const missingJobs = presetJobs.filter(name => !existingJobNames.includes(name));
-      
-      if (missingJobs.length > 0) {
-        setHasAttemptedCreate(true);
-        createPresetJobsMutation.mutate(jobs);
-      }
-    }
-  }, [isAuthenticated, jobsLoading, hasAttemptedCreate, createPresetJobsMutation, jobs]);
 
   const { data: shift } = useQuery<Shift>({
     queryKey: ["/api/shifts", shiftId],
@@ -261,15 +210,6 @@ export default function ShiftForm() {
       </header>
 
       <main className="container max-w-screen-md mx-auto px-4 py-6">
-        {createPresetJobsMutation.isPending && (
-          <Card className="p-6 mb-6 bg-muted">
-            <div className="flex items-center gap-3">
-              <div className="animate-spin h-5 w-5 border-2 border-primary border-t-transparent rounded-full"></div>
-              <p className="text-sm font-medium">Setting up your jobs...</p>
-            </div>
-          </Card>
-        )}
-        
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <Card className="p-6 space-y-6">
             <div>

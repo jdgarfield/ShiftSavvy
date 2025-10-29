@@ -46,6 +46,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
+    // First, try to find user by email if email exists
+    if (userData.email) {
+      const existingUserByEmail = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, userData.email))
+        .limit(1);
+      
+      if (existingUserByEmail.length > 0 && existingUserByEmail[0].id !== userData.id) {
+        // Update the existing user's ID to match the new OAuth sub
+        const [updatedUser] = await db
+          .update(users)
+          .set({
+            id: userData.id,
+            ...userData,
+            updatedAt: new Date(),
+          })
+          .where(eq(users.email, userData.email))
+          .returning();
+        return updatedUser;
+      }
+    }
+
+    // Otherwise, do normal upsert by ID
     const [user] = await db
       .insert(users)
       .values(userData)
