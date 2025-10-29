@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { insertJobSchema, insertShiftSchema } from "@shared/schema";
+import { insertJobSchema, insertShiftSchema, insertEmployerSchema, updateProfileSchema } from "@shared/schema";
 import { ZodError } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -177,6 +177,113 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting shift:", error);
       res.status(500).json({ message: "Failed to delete shift" });
+    }
+  });
+
+  app.patch('/api/auth/user/profile', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const validated = updateProfileSchema.parse(req.body);
+      
+      // Build updates object - allow clearing optional fields
+      const updates: any = {};
+      
+      // For name fields, only update if provided and not empty
+      if (validated.firstName !== undefined && validated.firstName.trim() !== '') {
+        updates.firstName = validated.firstName.trim();
+      }
+      if (validated.lastName !== undefined && validated.lastName.trim() !== '') {
+        updates.lastName = validated.lastName.trim();
+      }
+      
+      // For optional fields, allow clearing by sending empty string or null
+      if (validated.username !== undefined) {
+        updates.username = validated.username.trim() || null;
+      }
+      if (validated.zipCode !== undefined) {
+        updates.zipCode = validated.zipCode.trim() || null;
+      }
+      if (validated.profileImageUrl !== undefined) {
+        updates.profileImageUrl = validated.profileImageUrl.trim() || null;
+      }
+      
+      const updatedUser = await storage.updateUserProfile(userId, updates);
+      res.json(updatedUser);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      console.error("Error updating profile:", error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
+  app.get('/api/employers', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employers = await storage.getEmployers(userId);
+      res.json(employers);
+    } catch (error) {
+      console.error("Error fetching employers:", error);
+      res.status(500).json({ message: "Failed to fetch employers" });
+    }
+  });
+
+  app.get('/api/employers/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employer = await storage.getEmployer(req.params.id, userId);
+      if (!employer) {
+        return res.status(404).json({ message: "Employer not found" });
+      }
+      res.json(employer);
+    } catch (error) {
+      console.error("Error fetching employer:", error);
+      res.status(500).json({ message: "Failed to fetch employer" });
+    }
+  });
+
+  app.post('/api/employers', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const validated = insertEmployerSchema.parse(req.body);
+      const employer = await storage.createEmployer(userId, validated);
+      res.status(201).json(employer);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      console.error("Error creating employer:", error);
+      res.status(500).json({ message: "Failed to create employer" });
+    }
+  });
+
+  app.patch('/api/employers/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const validated = insertEmployerSchema.partial().parse(req.body);
+      const employer = await storage.updateEmployer(req.params.id, userId, validated);
+      res.json(employer);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      if (error instanceof Error && error.message === "Employer not found") {
+        return res.status(404).json({ message: "Employer not found" });
+      }
+      console.error("Error updating employer:", error);
+      res.status(500).json({ message: "Failed to update employer" });
+    }
+  });
+
+  app.delete('/api/employers/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      await storage.deleteEmployer(req.params.id, userId);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting employer:", error);
+      res.status(500).json({ message: "Failed to delete employer" });
     }
   });
 

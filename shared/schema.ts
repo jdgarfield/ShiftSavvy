@@ -30,7 +30,9 @@ export const users = pgTable("users", {
   email: varchar("email").unique(),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
+  username: varchar("username"),
   profileImageUrl: varchar("profile_image_url"),
+  zipCode: varchar("zip_code", { length: 10 }),
   // Tax settings
   state: varchar("state", { length: 2 }), // US state code for tax calculation
   localTaxRate: decimal("local_tax_rate", { precision: 5, scale: 4 }), // Local tax rate as decimal
@@ -118,7 +120,60 @@ export const insertShiftSchema = createInsertSchema(shifts).omit({
 export type InsertShift = z.infer<typeof insertShiftSchema>;
 export type Shift = typeof shifts.$inferSelect;
 
+// Employers table - tracks multiple employers/workplaces
+export const employers = pgTable("employers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  businessName: varchar("business_name", { length: 255 }).notNull(),
+  address: varchar("address", { length: 500 }),
+  phone: varchar("phone", { length: 20 }),
+  managerName: varchar("manager_name", { length: 255 }),
+  managerPhone: varchar("manager_phone", { length: 20 }),
+  isActive: integer("is_active").default(1).notNull(), // 1 = active, 0 = archived
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const employersRelations = relations(employers, ({ one }) => ({
+  user: one(users, {
+    fields: [employers.userId],
+    references: [users.id],
+  }),
+}));
+
+export const insertEmployerSchema = createInsertSchema(employers).omit({
+  id: true,
+  userId: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  businessName: z.string().min(1, "Business name is required").max(255),
+  address: z.string().max(500).optional(),
+  phone: z.string().max(20).optional(),
+  managerName: z.string().max(255).optional(),
+  managerPhone: z.string().max(20).optional(),
+});
+
+export type InsertEmployer = z.infer<typeof insertEmployerSchema>;
+export type Employer = typeof employers.$inferSelect;
+
+// Profile update schema with validation
+export const updateProfileSchema = z.object({
+  firstName: z.string().max(255).optional(),
+  lastName: z.string().max(255).optional(),
+  username: z.string().max(50).optional(),
+  zipCode: z.string().max(10).optional(),
+  // Accept URLs or base64 data URIs for profile images (max 100KB for base64)
+  profileImageUrl: z.string().max(150000).optional().refine(
+    (val) => !val || val === '' || val.startsWith('http') || val.startsWith('data:image/'),
+    { message: "Must be a valid URL or data URI" }
+  ),
+});
+
+export type UpdateProfile = z.infer<typeof updateProfileSchema>;
+
 export const usersRelations = relations(users, ({ many }) => ({
   jobs: many(jobs),
   shifts: many(shifts),
+  employers: many(employers),
 }));
