@@ -79,7 +79,7 @@ export type Job = typeof jobs.$inferSelect;
 export const shifts = pgTable("shifts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
-  jobId: varchar("job_id").notNull().references(() => jobs.id, { onDelete: 'cascade' }),
+  jobTitle: varchar("job_title", { length: 100 }).notNull(), // Bartender, Server, Host, Busser, Expo
   employerId: varchar("employer_id").references(() => employers.id, { onDelete: 'set null' }),
   date: date("date").notNull(),
   hoursWorked: decimal("hours_worked", { precision: 5, scale: 2 }).notNull(),
@@ -98,10 +98,6 @@ export const shiftsRelations = relations(shifts, ({ one }) => ({
     fields: [shifts.userId],
     references: [users.id],
   }),
-  job: one(jobs, {
-    fields: [shifts.jobId],
-    references: [jobs.id],
-  }),
   employer: one(employers, {
     fields: [shifts.employerId],
     references: [employers.id],
@@ -114,7 +110,7 @@ export const insertShiftSchema = createInsertSchema(shifts).omit({
   createdAt: true,
   updatedAt: true,
 }).extend({
-  jobId: z.string().min(1, "Job is required"),
+  jobTitle: z.string().min(1, "Job title is required"),
   hoursWorked: z.coerce.number().min(0.25).max(24),
   hourlyWage: z.coerce.number().min(0),
   cashTips: z.coerce.number().min(0).optional(),
