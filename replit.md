@@ -56,6 +56,23 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### October 2025 - Zipcode Auto-Lookup & Legal Pages
+- **Zipcode Auto-Lookup Feature**:
+  - Added automatic city/state lookup when user enters a 5-digit zipcode
+  - Uses free zippopotam.us API with 500ms debounce
+  - Auto-populates city and state fields in profile
+  - Added `city` varchar(100) field to users table
+  - Profile displays "City, State Zipcode" format
+  - Shows "(looking up...)" indicator during API call
+- **Legal Pages Created**:
+  - Terms of Service (/legal/terms)
+  - Privacy Policy (/legal/privacy)
+  - Security (/legal/security)
+  - All accessible to authenticated and unauthenticated users
+  - Fixes 404 errors when clicking Footer legal links
+  - Each page includes Back button and proper navigation
+- **BottomNav Fix**: Removed nested <a> tag to fix React validateDOMNesting warning
+
 ### October 2025 - Jobs Simplified to Predefined Options
 - **Jobs Page Removed**: Eliminated separate Jobs management page - jobs are now predefined options only
 - **Database Schema Change**: 
