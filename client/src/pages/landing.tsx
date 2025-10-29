@@ -4,6 +4,7 @@ import { DollarSign, TrendingUp, FileText, Calculator } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
+import logoUrl from "@assets/ShiftSavvy - FINAL_1761769622129.png";
 
 export default function Landing() {
   const { t } = useTranslation();
@@ -35,9 +36,12 @@ export default function Landing() {
     <div className="min-h-screen bg-background flex flex-col">
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <h1 className="text-2xl font-heading font-bold text-primary">
-            {t('app.name')}
-          </h1>
+          <img 
+            src={logoUrl} 
+            alt="ShiftSavvy" 
+            className="h-8"
+            data-testid="logo-header"
+          />
           <ThemeToggle />
         </div>
       </header>

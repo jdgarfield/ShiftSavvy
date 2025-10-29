@@ -109,3 +109,15 @@ Preferred communication style: Simple, everyday language.
 - **Form Management:** react-hook-form and @hookform/resolvers (Zod resolver).
 - **CSV Export:** papaparse for CSV generation.
 - **Utilities:** nanoid (ID generation), clsx + tailwind-merge (className composition), class-variance-authority (component variants), memoizee (function memoization).
+
+## Recent Changes
+
+### October 2025 - Final Logo Implementation
+- **Final ShiftSavvy Logo Deployed**:
+  - Replaced all logo instances with final version (ShiftSavvy - FINAL_1761769622129.png)
+  - Updated logo imports in Landing page, Dashboard, Reports, Profile, Shift Form headers
+  - Updated Footer component with final logo (appears on all pages)
+  - Maintains consistent 32px (h-8) height across all implementations
+  - Blue horizontal logo with icon and "ShiftSavvy" text
+  - All logos verified and loading correctly via end-to-end testing
+  - Logo appears for both authenticated and unauthenticated users
