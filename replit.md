@@ -9,6 +9,8 @@ ShiftSavvy is a mobile-first Progressive Web App (PWA) designed for service indu
 - Visual analytics with charts and statistical summaries
 - Tax estimation capabilities (federal, state, local)
 - CSV/PDF export for tax filing
+- User profile management with image upload (base64, max 75KB)
+- Multiple employer tracking (business name, address, contact info)
 - Offline-capable PWA with service worker
 - Internationalization support (i18n)
 - Theme switching (light/dark mode)
@@ -58,7 +60,9 @@ Preferred communication style: Simple, everyday language.
 
 **API Structure:**
 - RESTful endpoints under `/api/*` prefix
-- Resource-based routing: `/api/jobs`, `/api/shifts`, `/api/auth/user`
+- Resource-based routing: `/api/jobs`, `/api/shifts`, `/api/employers`, `/api/auth/user`
+- Profile management: `/api/auth/user/profile` (PATCH) - update user profile with validation
+- Employer CRUD: `/api/employers` (GET, POST), `/api/employers/:id` (PATCH, DELETE)
 - Authentication middleware (`isAuthenticated`) protecting all data endpoints
 
 **Data Layer:**
@@ -78,9 +82,10 @@ Preferred communication style: Simple, everyday language.
 - Schema located in `shared/schema.ts` for client/server sharing
 
 **Schema Design:**
-- `users` - User profiles with tax settings (state, localTaxRate)
+- `users` - User profiles with tax settings (state, localTaxRate), profile data (username, zipCode, profileImageUrl)
 - `jobs` - Multiple workplaces per user (name, description, color, hourly wage)
 - `shifts` - Individual work shifts linked to jobs (date, hours, tips, tip-outs)
+- `employers` - Employer information (businessName, address, phone, managerName, managerPhone)
 - `sessions` - Session storage for Replit Auth (sid, sess, expire)
 
 **Key Design Decisions:**
@@ -143,6 +148,8 @@ Preferred communication style: Simple, everyday language.
 **Key Schemas:**
 - `insertJobSchema` - Job creation/update validation
 - `insertShiftSchema` - Shift creation/update validation
+- `updateProfileSchema` - Profile update validation (firstName, lastName, username, zipCode, profileImageUrl)
+- `insertEmployerSchema` - Employer creation/update validation (businessName required, min 1 char)
 - Type inference from schemas for TypeScript safety
 
 ### Error Handling
