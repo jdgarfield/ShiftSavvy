@@ -33,8 +33,9 @@ export const users = pgTable("users", {
   username: varchar("username"),
   profileImageUrl: varchar("profile_image_url"),
   zipCode: varchar("zip_code", { length: 10 }),
+  city: varchar("city", { length: 100 }), // City auto-populated from zipCode
   // Tax settings
-  state: varchar("state", { length: 2 }), // US state code for tax calculation
+  state: varchar("state", { length: 2 }), // US state code for tax calculation (also serves as location state)
   localTaxRate: decimal("local_tax_rate", { precision: 5, scale: 4 }), // Local tax rate as decimal
   // Preferences
   preferredLanguage: varchar("preferred_language", { length: 5 }).default('en').notNull(),
@@ -166,6 +167,7 @@ export const updateProfileSchema = z.object({
   lastName: z.string().max(255).optional(),
   username: z.string().max(50).optional(),
   zipCode: z.string().max(10).optional(),
+  city: z.string().max(100).optional(),
   // Accept URLs or base64 data URIs for profile images (max 100KB for base64)
   profileImageUrl: z.string().max(150000).optional().refine(
     (val) => !val || val === '' || val.startsWith('http') || val.startsWith('data:image/'),

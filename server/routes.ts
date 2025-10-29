@@ -147,6 +147,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (validated.zipCode !== undefined) {
         updates.zipCode = validated.zipCode.trim() || null;
       }
+      if (validated.city !== undefined) {
+        updates.city = validated.city.trim() || null;
+      }
       
       const updatedUser = await storage.updateUserProfile(userId, updates);
       res.json(updatedUser);

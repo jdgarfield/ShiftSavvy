@@ -13,6 +13,9 @@ import Reports from "@/pages/reports";
 import Profile from "@/pages/profile";
 import Calendar from "@/pages/calendar";
 import NotFound from "@/pages/not-found";
+import TermsOfService from "@/pages/legal-terms";
+import PrivacyPolicy from "@/pages/legal-privacy";
+import Security from "@/pages/legal-security";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -33,6 +36,9 @@ function Router() {
       {!isAuthenticated ? (
         <>
           <Route path="/" component={Landing} />
+          <Route path="/legal/terms" component={TermsOfService} />
+          <Route path="/legal/privacy" component={PrivacyPolicy} />
+          <Route path="/legal/security" component={Security} />
           <Route path="/:rest*">
             {() => {
               window.location.href = '/api/login';
@@ -53,6 +59,9 @@ function Router() {
           <Route path="/reports" component={Reports} />
           <Route path="/profile" component={Profile} />
           <Route path="/calendar" component={Calendar} />
+          <Route path="/legal/terms" component={TermsOfService} />
+          <Route path="/legal/privacy" component={PrivacyPolicy} />
+          <Route path="/legal/security" component={Security} />
           <Route path="/:rest*" component={NotFound} />
         </>
       )}

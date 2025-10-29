@@ -53,6 +53,8 @@ export default function Profile() {
   const [lastName, setLastName] = useState(user?.lastName || '');
   const [username, setUsername] = useState(user?.username || '');
   const [zipCode, setZipCode] = useState(user?.zipCode || '');
+  const [city, setCity] = useState(user?.city || '');
+  const [isLookingUpZipCode, setIsLookingUpZipCode] = useState(false);
 
   // Profile edit mode state
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -92,6 +94,7 @@ export default function Profile() {
       setLastName(user.lastName || '');
       setUsername(user.username || '');
       setZipCode(user.zipCode || '');
+      setCity(user.city || '');
       setState(user.state || '');
       setLocalTaxRate(user.localTaxRate ? (parseFloat(user.localTaxRate) * 100).toFixed(2) : '');
       
@@ -101,6 +104,38 @@ export default function Profile() {
       }
     }
   }, [user]);
+
+  // Auto-lookup city and state from zipcode
+  useEffect(() => {
+    const lookupZipCode = async () => {
+      // Only lookup if zipcode is exactly 5 digits
+      if (zipCode.length === 5 && /^\d{5}$/.test(zipCode)) {
+        setIsLookingUpZipCode(true);
+        try {
+          const response = await fetch(`https://api.zippopotam.us/us/${zipCode}`);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.places && data.places.length > 0) {
+              const place = data.places[0];
+              setCity(place['place name']);
+              setState(place['state abbreviation']);
+            }
+          }
+        } catch (error) {
+          // Silently fail - user can manually enter city/state if needed
+          console.error('Zipcode lookup failed:', error);
+        } finally {
+          setIsLookingUpZipCode(false);
+        }
+      }
+    };
+
+    const debounceTimer = setTimeout(() => {
+      lookupZipCode();
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [zipCode]);
 
   if (authLoading) {
     return (
@@ -146,7 +181,7 @@ export default function Profile() {
   });
 
   const updateProfileMutation = useMutation({
-    mutationFn: async (data: { firstName: string; lastName: string; username: string; zipCode: string }) => {
+    mutationFn: async (data: { firstName: string; lastName: string; username: string; zipCode: string; city?: string }) => {
       return await apiRequest('PATCH', '/api/auth/user/profile', data);
     },
     onSuccess: () => {
@@ -248,6 +283,7 @@ export default function Profile() {
       lastName,
       username,
       zipCode,
+      city,
     });
     setIsEditingProfile(false);
   };
@@ -366,7 +402,13 @@ export default function Profile() {
               </h2>
               <p className="text-muted-foreground text-sm">{user?.email}</p>
               {username && <p className="text-muted-foreground text-sm">@{username}</p>}
-              {zipCode && <p className="text-muted-foreground text-sm">{zipCode}</p>}
+              {(city || zipCode) && (
+                <p className="text-muted-foreground text-sm">
+                  {city && `${city}, `}
+                  {state && US_STATES.find(s => s.code === state)?.name}
+                  {zipCode && ` ${zipCode}`}
+                </p>
+              )}
               <p className="text-muted-foreground text-sm">Language: {i18n.language === 'en' ? 'English' : 'Español'}</p>
               {state && <p className="text-muted-foreground text-sm">Tax State: {US_STATES.find(s => s.code === state)?.name}</p>}
               {localTaxRate && <p className="text-muted-foreground text-sm">Local Tax Rate: {localTaxRate}%</p>}
@@ -422,15 +464,22 @@ export default function Profile() {
               </div>
 
               <div>
-                <Label htmlFor="zipCode" className="mb-2">Zip Code</Label>
+                <Label htmlFor="zipCode" className="mb-2">
+                  Zip Code {isLookingUpZipCode && <span className="text-xs text-muted-foreground">(looking up...)</span>}
+                </Label>
                 <Input
                   id="zipCode"
                   value={zipCode}
                   onChange={(e) => setZipCode(e.target.value)}
                   placeholder="12345"
-                  maxLength={10}
+                  maxLength={5}
                   data-testid="input-zip-code"
                 />
+                {city && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {city}, {US_STATES.find(s => s.code === state)?.name}
+                  </p>
+                )}
               </div>
 
               <div>

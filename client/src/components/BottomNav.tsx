@@ -21,9 +21,9 @@ export function BottomNav() {
           const Icon = item.icon;
           return (
             <Link key={item.path} href={item.path}>
-              <a
+              <div
                 data-testid={item.testId}
-                className={`flex flex-col items-center justify-center flex-1 h-full gap-1 transition-all ${
+                className={`flex flex-col items-center justify-center flex-1 h-full gap-1 transition-all cursor-pointer ${
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
@@ -33,7 +33,7 @@ export function BottomNav() {
                   className={`h-6 w-6 transition-transform ${isActive ? "-translate-y-0.5" : ""}`} 
                 />
                 <span className="text-xs font-medium">{item.label}</span>
-              </a>
+              </div>
             </Link>
           );
         })}
