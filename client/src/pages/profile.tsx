@@ -54,6 +54,9 @@ export default function Profile() {
   const [zipCode, setZipCode] = useState(user?.zipCode || '');
   const [profileImageUrl, setProfileImageUrl] = useState(user?.profileImageUrl || '');
 
+  // Profile edit mode state
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+
   // Employer dialog state
   const [isEmployerDialogOpen, setIsEmployerDialogOpen] = useState(false);
   const [editingEmployer, setEditingEmployer] = useState<Employer | null>(null);
@@ -92,6 +95,11 @@ export default function Profile() {
       setProfileImageUrl(user.profileImageUrl || '');
       setState(user.state || '');
       setLocalTaxRate(user.localTaxRate ? (parseFloat(user.localTaxRate) * 100).toFixed(2) : '');
+      
+      // Show edit form if profile is incomplete
+      if (!user.firstName || !user.lastName) {
+        setIsEditingProfile(true);
+      }
     }
   }, [user]);
 
@@ -243,6 +251,7 @@ export default function Profile() {
       zipCode,
       profileImageUrl,
     });
+    setIsEditingProfile(false);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -374,65 +383,96 @@ export default function Profile() {
               </h2>
               <p className="text-muted-foreground text-sm">{user?.email}</p>
               {username && <p className="text-muted-foreground text-sm">@{username}</p>}
+              {zipCode && <p className="text-muted-foreground text-sm">{zipCode}</p>}
+              {!isEditingProfile && (
+                <button
+                  onClick={() => setIsEditingProfile(true)}
+                  className="text-xs text-primary hover:underline mt-2"
+                  data-testid="link-edit-profile"
+                >
+                  Edit Profile Information
+                </button>
+              )}
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+          {isEditingProfile && (
+            <div className="space-y-4 mt-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="firstName" className="mb-2">First Name</Label>
+                  <Input
+                    id="firstName"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="First Name"
+                    data-testid="input-first-name"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="lastName" className="mb-2">Last Name</Label>
+                  <Input
+                    id="lastName"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Last Name"
+                    data-testid="input-last-name"
+                  />
+                </div>
+              </div>
+
               <div>
-                <Label htmlFor="firstName" className="mb-2">First Name</Label>
+                <Label htmlFor="username" className="mb-2">
+                  Username {user?.username && <span className="text-xs text-muted-foreground">(cannot be changed)</span>}
+                </Label>
                 <Input
-                  id="firstName"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="First Name"
-                  data-testid="input-first-name"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="@username"
+                  disabled={!!user?.username}
+                  data-testid="input-username"
                 />
               </div>
+
               <div>
-                <Label htmlFor="lastName" className="mb-2">Last Name</Label>
+                <Label htmlFor="zipCode" className="mb-2">Zip Code</Label>
                 <Input
-                  id="lastName"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Last Name"
-                  data-testid="input-last-name"
+                  id="zipCode"
+                  value={zipCode}
+                  onChange={(e) => setZipCode(e.target.value)}
+                  placeholder="12345"
+                  maxLength={10}
+                  data-testid="input-zip-code"
                 />
               </div>
-            </div>
 
-            <div>
-              <Label htmlFor="username" className="mb-2">Username</Label>
-              <Input
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="@username"
-                data-testid="input-username"
-              />
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleSaveProfile}
+                  disabled={updateProfileMutation.isPending}
+                  data-testid="button-save-profile"
+                  className="flex-1 hover-elevate active-elevate-2"
+                >
+                  {updateProfileMutation.isPending ? 'Saving...' : 'Save Profile'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsEditingProfile(false);
+                    setFirstName(user?.firstName || '');
+                    setLastName(user?.lastName || '');
+                    setUsername(user?.username || '');
+                    setZipCode(user?.zipCode || '');
+                  }}
+                  data-testid="button-cancel-profile"
+                  className="hover-elevate active-elevate-2"
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
-
-            <div>
-              <Label htmlFor="zipCode" className="mb-2">Zip Code</Label>
-              <Input
-                id="zipCode"
-                value={zipCode}
-                onChange={(e) => setZipCode(e.target.value)}
-                placeholder="12345"
-                maxLength={10}
-                data-testid="input-zip-code"
-              />
-            </div>
-
-            <Button
-              onClick={handleSaveProfile}
-              disabled={updateProfileMutation.isPending}
-              data-testid="button-save-profile"
-              className="w-full hover-elevate active-elevate-2"
-            >
-              {updateProfileMutation.isPending ? 'Saving...' : 'Save Profile'}
-            </Button>
-          </div>
+          )}
         </Card>
 
         {/* Employers Card */}
