@@ -267,6 +267,8 @@ export default function Reports() {
         </div>
       </header>
 
+      <BottomNav />
+
       <main className="container max-w-screen-md mx-auto px-4 py-6 space-y-6">
         <div className="flex items-center gap-3">
           <Select value={period} onValueChange={(value: Period) => setPeriod(value)}>
@@ -473,7 +475,6 @@ export default function Reports() {
       </main>
 
       <Footer isAuthenticated={true} />
-      <BottomNav />
     </div>
   );
 }
