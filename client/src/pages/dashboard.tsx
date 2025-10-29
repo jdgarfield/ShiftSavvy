@@ -61,11 +61,12 @@ export default function Dashboard() {
   thisMonthStart.setDate(1);
 
   const calculateEarnings = (shift: Shift) => {
+    const totalTips = parseFloat(shift.cashTips || '0') + parseFloat(shift.creditTips || '0');
+    const tipOutAmount = totalTips * (parseFloat(shift.tipOut || '0') / 100);
     return (
       parseFloat(shift.hourlyWage) * parseFloat(shift.hoursWorked) +
-      parseFloat(shift.cashTips || '0') +
-      parseFloat(shift.creditTips || '0') -
-      parseFloat(shift.tipOut || '0')
+      totalTips -
+      tipOutAmount
     );
   };
 

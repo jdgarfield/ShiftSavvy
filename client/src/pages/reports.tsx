@@ -54,11 +54,12 @@ export default function Reports() {
   }
 
   const calculateEarnings = (shift: Shift) => {
+    const totalTips = parseFloat(shift.cashTips || '0') + parseFloat(shift.creditTips || '0');
+    const tipOutAmount = totalTips * (parseFloat(shift.tipOut || '0') / 100);
     return (
       parseFloat(shift.hourlyWage) * parseFloat(shift.hoursWorked) +
-      parseFloat(shift.cashTips || '0') +
-      parseFloat(shift.creditTips || '0') -
-      parseFloat(shift.tipOut || '0')
+      totalTips -
+      tipOutAmount
     );
   };
 
@@ -67,11 +68,9 @@ export default function Reports() {
   };
 
   const calculateTipEarnings = (shift: Shift) => {
-    return (
-      parseFloat(shift.cashTips || '0') +
-      parseFloat(shift.creditTips || '0') -
-      parseFloat(shift.tipOut || '0')
-    );
+    const totalTips = parseFloat(shift.cashTips || '0') + parseFloat(shift.creditTips || '0');
+    const tipOutAmount = totalTips * (parseFloat(shift.tipOut || '0') / 100);
+    return totalTips - tipOutAmount;
   };
 
   const now = new Date();
@@ -125,14 +124,14 @@ export default function Reports() {
     }));
 
   const handleExportCSV = () => {
-    const headers = ['Date', 'Hours', 'Wage', 'Cash Tips', 'Credit Tips', 'Tip Out', 'Total'];
+    const headers = ['Date', 'Hours', 'Wage', 'Cash Tips', 'Credit Tips', 'Tip Out (%)', 'Total'];
     const rows = filteredShifts.map(s => [
       s.date,
       s.hoursWorked,
       s.hourlyWage,
       s.cashTips || '0',
       s.creditTips || '0',
-      s.tipOut || '0',
+      `${s.tipOut || '0'}%`,
       calculateEarnings(s).toFixed(2),
     ]);
 
@@ -207,13 +206,13 @@ export default function Reports() {
         `$${s.hourlyWage}`,
         `$${s.cashTips || '0'}`,
         `$${s.creditTips || '0'}`,
-        `$${s.tipOut || '0'}`,
+        `${s.tipOut || '0'}%`,
         `$${calculateEarnings(s).toFixed(2)}`,
       ]);
       
       autoTable(doc, {
         startY: 170,
-        head: [['Date', 'Hours', 'Wage', 'Cash Tips', 'Credit Tips', 'Tip Out', 'Total']],
+        head: [['Date', 'Hours', 'Wage', 'Cash Tips', 'Credit Tips', 'Tip Out (%)', 'Total']],
         body: tableData,
         theme: 'grid',
         headStyles: { fillColor: [59, 130, 246] },
