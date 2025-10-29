@@ -34,38 +34,33 @@ function Router() {
 
   return (
     <Switch>
-      {!isAuthenticated ? (
-        <>
-          <Route path="/" component={Landing} />
-          <Route path="/legal/terms" component={TermsOfService} />
-          <Route path="/legal/privacy" component={PrivacyPolicy} />
-          <Route path="/legal/security" component={Security} />
-          <Route path="/:rest*">
-            {() => {
-              window.location.href = '/api/login';
-              return null;
-            }}
-          </Route>
-        </>
-      ) : (
-        <>
-          <Route path="/" component={Dashboard} />
-          <Route path="/shift/new" component={ShiftForm} />
-          <Route path="/shift/:id">
-            {(params) => {
-              if (params.id === 'new') return null;
-              return <ShiftForm />;
-            }}
-          </Route>
-          <Route path="/reports" component={Reports} />
-          <Route path="/profile" component={Profile} />
-          <Route path="/calendar" component={Calendar} />
-          <Route path="/legal/terms" component={TermsOfService} />
-          <Route path="/legal/privacy" component={PrivacyPolicy} />
-          <Route path="/legal/security" component={Security} />
-          <Route component={NotFound} />
-        </>
-      )}
+      <Route path="/" component={!isAuthenticated ? Landing : Dashboard} />
+      <Route path="/shift/new" component={isAuthenticated ? ShiftForm : undefined} />
+      <Route path="/shift/:id">
+        {(params) => {
+          if (!isAuthenticated) {
+            window.location.href = '/api/login';
+            return null;
+          }
+          if (params.id === 'new') return null;
+          return <ShiftForm />;
+        }}
+      </Route>
+      <Route path="/reports" component={isAuthenticated ? Reports : undefined} />
+      <Route path="/profile" component={isAuthenticated ? Profile : undefined} />
+      <Route path="/calendar" component={isAuthenticated ? Calendar : undefined} />
+      <Route path="/legal/terms" component={TermsOfService} />
+      <Route path="/legal/privacy" component={PrivacyPolicy} />
+      <Route path="/legal/security" component={Security} />
+      <Route>
+        {() => {
+          if (!isAuthenticated) {
+            window.location.href = '/api/login';
+            return null;
+          }
+          return <NotFound />;
+        }}
+      </Route>
     </Switch>
   );
 }
