@@ -8,7 +8,8 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileDown, FileSpreadsheet, DollarSign, Clock, TrendingUp, PiggyBank } from "lucide-react";
+import { FileDown, FileSpreadsheet, DollarSign, Clock, TrendingUp, PiggyBank, ArrowLeft } from "lucide-react";
+import { useLocation } from "wouter";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format, startOfWeek, startOfMonth, startOfYear, endOfWeek, endOfMonth, endOfYear } from "date-fns";
 import jsPDF from "jspdf";
@@ -22,6 +23,7 @@ export default function Reports() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const [, setLocation] = useLocation();
   const [period, setPeriod] = useState<Period>('month');
 
   useEffect(() => {
@@ -240,9 +242,20 @@ export default function Reports() {
     <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-40 bg-card border-b border-card-border">
         <div className="container max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
-            <p className="text-xs text-muted-foreground">{t('reports.title')}</p>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setLocation("/")}
+              data-testid="button-back"
+              className="hover-elevate active-elevate-2"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div>
+              <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
+              <p className="text-xs text-muted-foreground">{t('reports.title')}</p>
+            </div>
           </div>
           <ThemeToggle />
         </div>

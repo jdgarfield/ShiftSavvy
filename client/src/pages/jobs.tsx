@@ -16,13 +16,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Briefcase } from "lucide-react";
+import { Plus, Briefcase, ArrowLeft } from "lucide-react";
 import { insertJobSchema, type InsertJob, type Job, type Shift } from "@shared/schema";
+import { useLocation } from "wouter";
 
 export default function Jobs() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const [, setLocation] = useLocation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<Job | null>(null);
 
@@ -141,9 +143,20 @@ export default function Jobs() {
     <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-40 bg-card border-b border-card-border">
         <div className="container max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
-            <p className="text-xs text-muted-foreground">{t('jobs.title')}</p>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setLocation("/")}
+              data-testid="button-back"
+              className="hover-elevate active-elevate-2"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div>
+              <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
+              <p className="text-xs text-muted-foreground">{t('jobs.title')}</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Button

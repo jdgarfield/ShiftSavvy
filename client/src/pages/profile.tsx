@@ -13,8 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { LogOut, Globe, DollarSign, Building2, Plus, Edit, Trash2 } from "lucide-react";
+import { LogOut, Globe, DollarSign, Building2, Plus, Edit, Trash2, ArrowLeft } from "lucide-react";
 import type { Employer } from "@shared/schema";
+import { useLocation } from "wouter";
 
 const US_STATES = [
   { code: 'AL', name: 'Alabama' }, { code: 'AK', name: 'Alaska' }, { code: 'AZ', name: 'Arizona' },
@@ -41,6 +42,7 @@ export default function Profile() {
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
   
   const [state, setState] = useState(user?.state || '');
   const [localTaxRate, setLocalTaxRate] = useState(user?.localTaxRate ? (parseFloat(user.localTaxRate) * 100).toFixed(2) : '');
@@ -327,9 +329,20 @@ export default function Profile() {
     <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-40 bg-card border-b border-card-border">
         <div className="container max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
-            <p className="text-xs text-muted-foreground">{t('profile.title')}</p>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setLocation("/")}
+              data-testid="button-back"
+              className="hover-elevate active-elevate-2"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div>
+              <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
+              <p className="text-xs text-muted-foreground">{t('profile.title')}</p>
+            </div>
           </div>
           <ThemeToggle />
         </div>
