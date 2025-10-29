@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shiftsavvy-v1';
+const CACHE_NAME = 'shiftsavvy-v2';
 const urlsToCache = [
   '/',
   '/index.html',
