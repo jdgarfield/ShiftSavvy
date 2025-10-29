@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BottomNav } from "@/components/BottomNav";
+import { Footer } from "@/components/Footer";
 import { StatCard } from "@/components/StatCard";
 import { ShiftCard } from "@/components/ShiftCard";
 import { Card } from "@/components/ui/card";
@@ -232,6 +233,7 @@ export default function Dashboard() {
         </div>
       </main>
 
+      <Footer />
       <BottomNav />
     </div>
   );
