@@ -196,11 +196,26 @@ export default function Jobs() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <Label htmlFor="name">{t('jobs.name')} *</Label>
+              <div className="flex flex-wrap gap-2 mt-2 mb-3">
+                {['Server', 'Bartender', 'Expo', 'Busser', 'Host'].map((jobType) => (
+                  <Button
+                    key={jobType}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => form.setValue('name', jobType)}
+                    data-testid={`button-preset-${jobType.toLowerCase()}`}
+                    className="hover-elevate active-elevate-2"
+                  >
+                    {jobType}
+                  </Button>
+                ))}
+              </div>
               <Input
                 id="name"
                 data-testid="input-job-name"
                 {...form.register("name")}
-                className="mt-2"
+                placeholder="Or enter a custom job name"
               />
               {form.formState.errors.name && (
                 <p className="text-sm text-destructive mt-1">{form.formState.errors.name.message}</p>
