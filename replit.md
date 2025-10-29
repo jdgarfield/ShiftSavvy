@@ -35,6 +35,12 @@ ShiftSavvy is a mobile-first Progressive Web App (PWA) designed for service indu
 - Offline-capable PWA with service worker
 - Internationalization support (i18n)
 - Theme switching (light/dark mode via header toggle)
+- Bottom navigation bar (BottomNav)
+  - Appears on all authenticated pages (Dashboard, Calendar, Reports, Jobs, Profile, Shift Form, 404)
+  - Does not appear on landing page (unauthenticated users)
+  - Positioned just above footer in document flow
+  - Contains quick access to: Dashboard, Add Shift, Reports, Jobs, Profile
+  - Active state indication for current page
 - Global footer navigation
   - Product navigation (Dashboard, Calendar, Reports, Jobs)
   - Legal links (Terms of Service, Privacy Policy, Security)
@@ -49,6 +55,13 @@ ShiftSavvy is a mobile-first Progressive Web App (PWA) designed for service indu
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
+
+### October 2025 - Navigation Improvements
+- **Bottom Navigation Repositioned**: 
+  - Changed BottomNav from fixed viewport positioning to document flow positioning
+  - Now appears just above footer on all authenticated pages (Dashboard, Calendar, Reports, Jobs, Profile, Shift Form, 404)
+  - Removed from landing page (unauthenticated users don't see it)
+  - Provides consistent navigation across all authenticated sections of the app
 
 ### October 2025 - Tax Disclaimer & 2025 Rate Updates
 - **Tax Rates Updated**: Updated all state tax rates to 2025 estimates in shared/taxRates.ts

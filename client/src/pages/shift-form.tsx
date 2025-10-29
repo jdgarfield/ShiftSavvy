@@ -16,6 +16,7 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Footer } from "@/components/Footer";
+import { BottomNav } from "@/components/BottomNav";
 import { ArrowLeft, Save, Trash } from "lucide-react";
 import { insertShiftSchema, type InsertShift, type Job, type Shift, type Employer } from "@shared/schema";
 
@@ -381,6 +382,7 @@ export default function ShiftForm() {
         </form>
       </main>
       
+      <BottomNav />
       <Footer isAuthenticated={true} />
     </div>
   );
