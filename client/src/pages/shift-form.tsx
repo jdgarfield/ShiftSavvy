@@ -187,7 +187,7 @@ export default function ShiftForm() {
             <div>
               <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
               <p className="text-xs text-muted-foreground">
-                {isEditing ? t('shift.edit') : t('shift.add')}
+                {isEditing ? t('shift.edit') : t('shift.add')} • v3
               </p>
             </div>
           </div>
