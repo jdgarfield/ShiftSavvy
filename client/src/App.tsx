@@ -63,7 +63,7 @@ function Router() {
           <Route path="/legal/terms" component={TermsOfService} />
           <Route path="/legal/privacy" component={PrivacyPolicy} />
           <Route path="/legal/security" component={Security} />
-          <Route path="/:rest*" component={NotFound} />
+          <Route component={NotFound} />
         </>
       )}
     </Switch>
