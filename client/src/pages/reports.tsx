@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FileDown, FileSpreadsheet, DollarSign, Clock, TrendingUp } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format, startOfWeek, startOfMonth, startOfYear, endOfWeek, endOfMonth, endOfYear } from "date-fns";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import type { Shift } from "@shared/schema";
 
 type Period = 'week' | 'month' | 'year';
@@ -143,10 +145,83 @@ export default function Reports() {
   };
 
   const handleExportPDF = () => {
-    toast({
-      title: "Coming Soon",
-      description: "PDF export will be available soon",
-    });
+    if (filteredShifts.length === 0) {
+      toast({
+        title: "No Data",
+        description: "No shifts found for the selected period",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const doc = new jsPDF();
+      
+      // Title
+      doc.setFontSize(20);
+      doc.text('ShiftSavvy Earnings Report', 14, 20);
+      
+      // Period info
+      doc.setFontSize(12);
+      doc.text(`Period: ${period.charAt(0).toUpperCase() + period.slice(1)}`, 14, 30);
+      doc.text(`Generated: ${format(new Date(), 'MMM d, yyyy')}`, 14, 37);
+      
+      // Summary section
+      doc.setFontSize(14);
+      doc.text('Summary', 14, 50);
+      doc.setFontSize(10);
+      doc.text(`Total Earnings: $${totalEarnings.toFixed(2)}`, 14, 58);
+      doc.text(`Total Shifts: ${filteredShifts.length}`, 14, 64);
+      doc.text(`Wage Earnings: $${wageEarnings.toFixed(2)}`, 14, 70);
+      doc.text(`Tip Earnings: $${tipEarnings.toFixed(2)}`, 14, 76);
+      doc.text(`Total Hours: ${totalHours.toFixed(2)}`, 14, 82);
+      doc.text(`Avg Per Hour: $${avgPerHour.toFixed(2)}`, 14, 88);
+      
+      // Tax estimates section
+      doc.setFontSize(14);
+      doc.text('Tax Estimates', 14, 100);
+      doc.setFontSize(10);
+      doc.text(`Federal Tax (22%): $${federalTax.toFixed(2)}`, 14, 108);
+      doc.text(`State Tax (5%): $${stateTax.toFixed(2)}`, 14, 114);
+      doc.text(`Local Tax (2%): $${localTax.toFixed(2)}`, 14, 120);
+      doc.text(`Total Tax: $${totalTax.toFixed(2)}`, 14, 126);
+      doc.text(`Take Home: $${takeHome.toFixed(2)}`, 14, 132);
+      
+      // Shifts table
+      const tableData = filteredShifts.map(s => [
+        format(new Date(s.date), 'MMM d, yyyy'),
+        s.hoursWorked,
+        `$${s.hourlyWage}`,
+        `$${s.cashTips || '0'}`,
+        `$${s.creditTips || '0'}`,
+        `$${s.tipOut || '0'}`,
+        `$${calculateEarnings(s).toFixed(2)}`,
+      ]);
+      
+      autoTable(doc, {
+        startY: 145,
+        head: [['Date', 'Hours', 'Wage', 'Cash Tips', 'Credit Tips', 'Tip Out', 'Total']],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { fillColor: [59, 130, 246] },
+        styles: { fontSize: 8 },
+      });
+      
+      // Save PDF
+      doc.save(`shiftsavvy-${period}-report.pdf`);
+      
+      toast({
+        title: t('common.success'),
+        description: "PDF exported successfully",
+      });
+    } catch (error) {
+      console.error('PDF export error:', error);
+      toast({
+        title: "Export Failed",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
