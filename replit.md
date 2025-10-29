@@ -51,6 +51,7 @@ Preferred communication style: Simple, everyday language.
 - Custom spacing system (2, 4, 6, 8, 12, 16, 20, 24 units)
 - Typography: Inter (data/numbers) + Poppins (headings)
 - Mobile-first responsive design with breakpoint at 768px
+- Custom CSS utilities: number input spinner arrows removed for cleaner UI
 
 **Design System:**
 - Hybrid approach: Apple HIG (minimalism) + Material Design 3 (interactivity)
@@ -92,6 +93,8 @@ Preferred communication style: Simple, everyday language.
 - `users` - User profiles with tax settings (state, localTaxRate), profile data (username, zipCode)
 - `jobs` - Multiple workplaces per user (name, description, color, hourly wage)
 - `shifts` - Individual work shifts linked to jobs (date, hours, tips, tip-outs)
+  - employerId: Nullable foreign key to employers table
+  - tipOut: Decimal representing percentage (0-100) of tips shared with others
 - `employers` - Employer information (businessName, address, phone, managerName, managerPhone)
 - `sessions` - Session storage for Replit Auth (sid, sess, expire)
 
@@ -100,6 +103,7 @@ Preferred communication style: Simple, everyday language.
 - Cascade deletion (jobs → shifts deleted on job deletion)
 - UUID primary keys via `gen_random_uuid()`
 - Timestamps for created/updated tracking
+- Tip-out stored as percentage (0-100) with calculations applied at runtime
 
 ### Authentication & Session Management
 
@@ -154,10 +158,15 @@ Preferred communication style: Simple, everyday language.
 
 **Key Schemas:**
 - `insertJobSchema` - Job creation/update validation
-- `insertShiftSchema` - Shift creation/update validation
+- `insertShiftSchema` - Shift creation/update validation (jobId required, min 1 character; employerId uses "none" sentinel that transforms to null)
 - `updateProfileSchema` - Profile update validation (firstName, lastName, username, zipCode)
 - `insertEmployerSchema` - Employer creation/update validation (businessName required, min 1 char)
 - Type inference from schemas for TypeScript safety
+
+**Validation Strategy:**
+- Client-side: Zod schemas enforce required fields and data types
+- Server-side: Additional guards in route handlers prevent blank jobId submissions (returns 400 if jobId is empty or whitespace)
+- Dual validation ensures data integrity even if client validation is bypassed
 
 ### Error Handling
 
