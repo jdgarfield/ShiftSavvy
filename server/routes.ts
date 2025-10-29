@@ -140,6 +140,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const validated = insertShiftSchema.parse(req.body);
+      
+      // Additional server-side guard to prevent blank jobId
+      if (!validated.jobId || validated.jobId.trim() === '') {
+        return res.status(400).json({ message: "Job is required" });
+      }
+      
       const shift = await storage.createShift(userId, validated);
       res.status(201).json(shift);
     } catch (error) {
@@ -155,6 +161,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const validated = insertShiftSchema.partial().parse(req.body);
+      
+      // Additional server-side guard to prevent blank jobId if it's being updated
+      if (validated.jobId !== undefined && (!validated.jobId || validated.jobId.trim() === '')) {
+        return res.status(400).json({ message: "Job is required" });
+      }
+      
       const shift = await storage.updateShift(req.params.id, userId, validated);
       res.json(shift);
     } catch (error) {

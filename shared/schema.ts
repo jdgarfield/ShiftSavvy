@@ -114,13 +114,14 @@ export const insertShiftSchema = createInsertSchema(shifts).omit({
   createdAt: true,
   updatedAt: true,
 }).extend({
+  jobId: z.string().min(1, "Job is required"),
   hoursWorked: z.coerce.number().min(0.25).max(24),
   hourlyWage: z.coerce.number().min(0),
   cashTips: z.coerce.number().min(0).optional(),
   creditTips: z.coerce.number().min(0).optional(),
   tipOut: z.coerce.number().min(0).max(100).optional(), // Percentage (0-100)
   coversServed: z.coerce.number().int().min(0).optional(),
-  employerId: z.string().optional(),
+  employerId: z.string().optional().nullable().transform(val => val === "none" ? null : val),
 });
 
 export type InsertShift = z.infer<typeof insertShiftSchema>;

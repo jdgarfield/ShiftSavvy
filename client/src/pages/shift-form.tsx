@@ -110,7 +110,7 @@ export default function ShiftForm() {
     resolver: zodResolver(insertShiftSchema),
     defaultValues: {
       jobId: "",
-      employerId: "",
+      employerId: "none",
       date: new Date().toISOString().split('T')[0],
       hoursWorked: 0,
       hourlyWage: 0,
@@ -126,7 +126,7 @@ export default function ShiftForm() {
     if (shift) {
       form.reset({
         jobId: shift.jobId,
-        employerId: shift.employerId || "",
+        employerId: shift.employerId || "none",
         date: shift.date,
         hoursWorked: parseFloat(shift.hoursWorked),
         hourlyWage: parseFloat(shift.hourlyWage),
@@ -294,16 +294,16 @@ export default function ShiftForm() {
             </div>
 
             <div>
-              <Label htmlFor="employerId">Employer</Label>
+              <Label htmlFor="employerId">Employer (optional)</Label>
               <Select
-                value={form.watch("employerId") || ""}
-                onValueChange={(value) => form.setValue("employerId", value || undefined)}
+                value={form.watch("employerId") || "none"}
+                onValueChange={(value) => form.setValue("employerId", value)}
               >
                 <SelectTrigger id="employerId" data-testid="select-employer" className="mt-2">
-                  <SelectValue placeholder={employers.length === 0 ? "No employers added" : "Select employer (optional)"} />
+                  <SelectValue placeholder={employers.length === 0 ? "No employers added" : "Select employer"} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   {employers.map((employer) => (
                     <SelectItem key={employer.id} value={employer.id} data-testid={`employer-option-${employer.id}`}>
                       {employer.businessName}
