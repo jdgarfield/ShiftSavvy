@@ -198,6 +198,23 @@ export default function ShiftForm() {
       </header>
 
       <main className="container max-w-screen-md mx-auto px-4 py-6">
+        {jobs.length === 0 && (
+          <Card className="p-6 mb-6 bg-muted border-primary">
+            <p className="text-sm font-medium mb-2">No jobs yet!</p>
+            <p className="text-sm text-muted-foreground mb-4">
+              You need to create a job before you can add a shift.
+            </p>
+            <Button
+              type="button"
+              onClick={() => setLocation("/jobs")}
+              data-testid="button-go-to-jobs"
+              className="hover-elevate active-elevate-2"
+            >
+              Go to Jobs
+            </Button>
+          </Card>
+        )}
+        
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <Card className="p-6 space-y-6">
             <div>
@@ -205,9 +222,10 @@ export default function ShiftForm() {
               <Select
                 value={form.watch("jobId")}
                 onValueChange={(value) => form.setValue("jobId", value)}
+                disabled={jobs.length === 0}
               >
                 <SelectTrigger id="jobId" data-testid="select-job" className="mt-2">
-                  <SelectValue placeholder={t('shift.selectJob')} />
+                  <SelectValue placeholder={jobs.length === 0 ? "No jobs available" : t('shift.selectJob')} />
                 </SelectTrigger>
                 <SelectContent>
                   {jobs.map((job) => (
