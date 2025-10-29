@@ -4,6 +4,7 @@ import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { Link } from "wouter";
 import { Footer } from "@/components/Footer";
 import { BottomNav } from "@/components/BottomNav";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function PrivacyPolicy() {
@@ -11,21 +12,27 @@ export default function PrivacyPolicy() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <header className="sticky top-0 z-40 bg-card border-b border-card-border">
+        <div className="container max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link href={isAuthenticated ? "/" : "/"}>
+              <Button variant="ghost" size="icon" className="hover-elevate active-elevate-2" data-testid="button-back" aria-label="Go back">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </Link>
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-6 w-6 text-primary" />
+              <h1 className="text-xl font-heading font-bold">Privacy Policy</h1>
+            </div>
+          </div>
+          <ThemeToggle />
+        </div>
+      </header>
+
       <main className="flex-1 px-4 py-12">
         <div className="max-w-3xl mx-auto">
-          <Link href={isAuthenticated ? "/" : "/"}>
-            <Button variant="ghost" size="sm" className="mb-6 hover-elevate active-elevate-2" data-testid="button-back">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-          </Link>
-          
           <Card>
             <CardContent className="pt-6">
-              <div className="flex items-center gap-3 mb-6">
-                <ShieldCheck className="h-8 w-8 text-primary" />
-                <h1 className="text-3xl font-heading font-bold">Privacy Policy</h1>
-              </div>
               
               <div className="space-y-6 text-muted-foreground">
                 <section>
