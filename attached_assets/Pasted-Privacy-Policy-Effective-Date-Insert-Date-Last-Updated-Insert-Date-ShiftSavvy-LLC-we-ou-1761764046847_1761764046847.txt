@@ -1,0 +1,110 @@
+Privacy Policy
+
+Effective Date: [Insert Date]
+Last Updated: [Insert Date]
+
+ShiftSavvy LLC ("we", "our", or "us") respects your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you use our web-based app (the "Service").
+
+By using ShiftSavvy, you agree to the terms of this Privacy Policy.
+
+1. What Information We Collect
+
+We collect only the information necessary to operate and improve our Service:
+
+Information You Provide:
+
+First Name and Last Name
+
+Email Address
+
+Zip Code
+
+We do not collect sensitive personal information such as Social Security numbers, financial account details, or government-issued IDs.
+
+2. How We Use Your Information
+
+We use your personal information to:
+
+Create and manage your account
+
+Provide personalized features (e.g. shift tracking, earnings summaries)
+
+Improve our tools and user experience
+
+Communicate essential updates or changes to the Service
+
+We do not sell, rent, or share your personal data with third parties for marketing purposes.
+
+3. How We Store and Protect Your Information
+
+We take reasonable measures to protect your information, including:
+
+Secure transmission (SSL encryption)
+
+Access control to internal systems
+
+Data backups and storage best practices
+
+However, no system is completely secure. By using our Service, you understand that your information is provided at your own risk.
+
+4. Data Retention and Account Deletion
+
+You may delete your account at any time. Once deleted:
+
+Your personal data is permanently removed from our active systems
+
+We may retain anonymized or aggregated usage data for analytics purposes
+
+5. Children’s Privacy
+
+ShiftSavvy is not intended for children under the age of 16. We do not knowingly collect personal data from anyone under this age. If we become aware that we’ve inadvertently collected data from a minor, we will delete it immediately.
+
+6. Cookies and Tracking
+
+We may use cookies or similar technologies to:
+
+Maintain your session while using the app
+
+Collect anonymous usage data to improve performance
+
+You can disable cookies in your browser settings, but some features of the Service may not work properly as a result.
+
+7. Third-Party Services
+
+Currently, ShiftSavvy does not integrate with any third-party services or platforms. If this changes, we will update this Privacy Policy to reflect what is shared and why.
+
+8. Your Rights and Choices
+
+You have the right to:
+
+View or correct your personal information
+
+Delete your account and associated data
+
+Opt out of non-essential communications
+
+To exercise any of these rights, contact us at the email below.
+
+9. Changes to This Policy
+
+We may update this Privacy Policy from time to time. If we make changes, we’ll update the “Effective Date” at the top of this page and notify users where appropriate.
+
+10. Contact Us
+
+For questions or concerns about this Privacy Policy:
+
+ShiftSavvy LLC
+Louisville, KY, USA
+Email: [Insert Contact Email]
+
+✅ Summary
+
+We collect minimal personal data (name, email, zip)
+
+Your data is used only to provide the service — not sold or shared
+
+You can delete your data anytime
+
+We do not provide tax or financial advice
+
+No third-party integrations (yet)
