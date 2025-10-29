@@ -1,0 +1,71 @@
+Terms of Service
+Effective Date: October 29, 2025
+Welcome to ShiftSavvy! These Terms of Service (“Terms”) govern your access to and use of the ShiftSavvy web application (“Service”), owned and operated by ShiftSavvy LLC, a company based in Louisville, Kentucky, USA.
+By accessing or using ShiftSavvy, you agree to be bound by these Terms. If you do not agree, do not use the Service.
+________________________________________
+1. Eligibility
+To use ShiftSavvy, you must:
+•	Be at least 16 years old
+•	Be legally permitted to work in a restaurant, bar, or adult establishment that serves alcohol
+By using the Service, you confirm that you meet these eligibility requirements.
+________________________________________
+2. Service Overview
+ShiftSavvy is a web-based tool designed to help service industry professionals:
+•	Track tips and earnings
+•	Log and manage work shifts
+•	Estimate taxes and retirement withholdings
+Important: All financial figures provided by ShiftSavvy are estimates for planning purposes only. ShiftSavvy does not provide financial, tax, or legal advice. You should consult a licensed tax or financial advisor before making any financial decisions.
+________________________________________
+3. Account Registration and Deletion
+You may create an account by providing your:
+•	First name
+•	Last name
+•	Email address
+•	Zip code
+You are responsible for keeping your login information secure.
+You may delete your account at any time. Deletion is permanent and will remove your data from our active systems.
+________________________________________
+4. Privacy
+Your privacy is important to us. Please review our Privacy Policy to understand how we collect, use, and protect your personal information.
+We collect limited personal data (name, email, zip code) solely for the purpose of operating the Service.
+________________________________________
+5. Acceptable Use
+You agree not to:
+•	Use ShiftSavvy for any illegal or unauthorized purpose
+•	Attempt to access accounts or data that do not belong to you
+•	Distribute, copy, or reverse-engineer any part of the Service without written permission
+________________________________________
+6. Disclaimer of Warranties
+The Service is provided “as is” and “as available”. ShiftSavvy LLC makes no warranties regarding:
+•	The accuracy or completeness of estimated financial data
+•	Availability or uninterrupted use of the Service
+You agree to use all data and tools at your own risk and solely for planning purposes.
+________________________________________
+7. Limitation of Liability
+To the fullest extent permitted by law, ShiftSavvy LLC will not be liable for any:
+•	Indirect or consequential damages
+•	Loss of income, tips, or financial data
+•	Decisions made based on estimated figures provided by the Service
+________________________________________
+8. Changes to the Service or Terms
+ShiftSavvy LLC may update or discontinue parts of the Service at any time, with or without notice.
+We may also update these Terms. When we do, we’ll update the effective date at the top of this page. Continued use of the Service means you accept the new Terms.
+________________________________________
+9. Governing Law
+These Terms are governed by the laws of the Commonwealth of Kentucky and the United States of America, without regard to conflict of law principles.
+________________________________________
+10. Contact Us
+For questions about these Terms, contact:
+ShiftSavvy LLC
+Louisville, KY, USA
+Email: contact@goshiftsavvy.com
+________________________________________
+✅ Summary
+•	You must be 16+ and legally eligible to work in your industry
+•	ShiftSavvy provides estimates only — no tax or financial advice
+•	You can create and delete your account freely
+•	Your data is protected under our Privacy Policy
+•	Use is at your own risk, and we are not liable for financial outcomes
+________________________________________
+⚠️ Disclaimer
+This is a general-purpose template and not a substitute for legal advice. You should have a qualified attorney review and adapt this Terms of Service to ensure full legal compliance — especially before launching a paid version or collecting more personal data.
