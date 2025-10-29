@@ -240,9 +240,9 @@ export default function Reports() {
   return (
     <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-40 bg-card border-b border-card-border">
-        <div className="container max-w-screen-md mx-auto px-4 h-14 flex items-center justify-between">
+        <div className="container max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-heading font-semibold">ShiftSavvy</h1>
+            <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
             <p className="text-xs text-muted-foreground">{t('reports.title')}</p>
           </div>
           <ThemeToggle />

@@ -196,7 +196,7 @@ export default function ShiftForm() {
   return (
     <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-40 bg-card border-b border-card-border">
-        <div className="container max-w-screen-md mx-auto px-4 h-14 flex items-center justify-between">
+        <div className="container max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
@@ -208,7 +208,7 @@ export default function ShiftForm() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-lg font-heading font-semibold">ShiftSavvy</h1>
+              <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
               <p className="text-xs text-muted-foreground">
                 {isEditing ? t('shift.edit') : t('shift.add')}
               </p>
