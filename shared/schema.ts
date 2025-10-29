@@ -80,13 +80,14 @@ export const shifts = pgTable("shifts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   jobId: varchar("job_id").notNull().references(() => jobs.id, { onDelete: 'cascade' }),
+  employerId: varchar("employer_id").references(() => employers.id, { onDelete: 'set null' }),
   date: date("date").notNull(),
   hoursWorked: decimal("hours_worked", { precision: 5, scale: 2 }).notNull(),
   hourlyWage: decimal("hourly_wage", { precision: 8, scale: 2 }).notNull(),
   cashTips: decimal("cash_tips", { precision: 10, scale: 2 }).default('0').notNull(),
   creditTips: decimal("credit_tips", { precision: 10, scale: 2 }).default('0').notNull(),
   coversServed: integer("covers_served").default(0),
-  tipOut: decimal("tip_out", { precision: 10, scale: 2 }).default('0').notNull(), // Amount shared with others
+  tipOut: decimal("tip_out", { precision: 5, scale: 2 }).default('0').notNull(), // Percentage of tips shared with others
   notes: varchar("notes", { length: 1000 }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -101,6 +102,10 @@ export const shiftsRelations = relations(shifts, ({ one }) => ({
     fields: [shifts.jobId],
     references: [jobs.id],
   }),
+  employer: one(employers, {
+    fields: [shifts.employerId],
+    references: [employers.id],
+  }),
 }));
 
 export const insertShiftSchema = createInsertSchema(shifts).omit({
@@ -113,8 +118,9 @@ export const insertShiftSchema = createInsertSchema(shifts).omit({
   hourlyWage: z.coerce.number().min(0),
   cashTips: z.coerce.number().min(0).optional(),
   creditTips: z.coerce.number().min(0).optional(),
-  tipOut: z.coerce.number().min(0).optional(),
+  tipOut: z.coerce.number().min(0).max(100).optional(), // Percentage (0-100)
   coversServed: z.coerce.number().int().min(0).optional(),
+  employerId: z.string().optional(),
 });
 
 export type InsertShift = z.infer<typeof insertShiftSchema>;
