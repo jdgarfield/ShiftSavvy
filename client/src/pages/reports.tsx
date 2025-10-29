@@ -17,7 +17,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { STATE_TAX_RATES, FEDERAL_TAX_RATE } from "@shared/taxRates";
 import type { Shift } from "@shared/schema";
-import logoUrl from "@assets/Image Horizontal - 150_1761766859354.png";
+import logoUrl from "@assets/ShiftSavvy - FINAL_1761769622129.png";
 
 type Period = 'week' | 'month' | 'year';
 

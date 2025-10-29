@@ -14,7 +14,7 @@ import { DollarSign, TrendingUp, Calendar, Plus } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import type { Shift } from "@shared/schema";
 import { parseLocalDate, formatLocalDate } from "@/lib/dateUtils";
-import logoUrl from "@assets/Image Horizontal - 150_1761766859354.png";
+import logoUrl from "@assets/ShiftSavvy - FINAL_1761769622129.png";
 
 type PeriodFilter = 'TODAY' | 'WEEK' | null;
 

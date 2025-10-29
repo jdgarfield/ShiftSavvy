@@ -19,7 +19,7 @@ import { Footer } from "@/components/Footer";
 import { BottomNav } from "@/components/BottomNav";
 import { ArrowLeft, Save, Trash } from "lucide-react";
 import { insertShiftSchema, type InsertShift, type Shift, type Employer } from "@shared/schema";
-import logoUrl from "@assets/Image Horizontal - 150_1761766859354.png";
+import logoUrl from "@assets/ShiftSavvy - FINAL_1761769622129.png";
 
 // Predefined job options
 const JOB_OPTIONS = [

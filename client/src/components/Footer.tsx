@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import logoUrl from "@assets/Image Horizontal - 150_1761766859354.png";
+import logoUrl from "@assets/ShiftSavvy - FINAL_1761769622129.png";
 
 interface FooterProps {
   isAuthenticated?: boolean;
