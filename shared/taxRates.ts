@@ -32,6 +32,7 @@ export const STATE_TAX_RATES: Record<string, number> = {
   'CA': 0.093,  // California (1-13.3% progressive, ~9.3% for middle income)
   'CO': 0.044,  // Colorado (4.4% flat as of 2025)
   'CT': 0.05,   // Connecticut (3-6.99% progressive)
+  'DC': 0.085,  // District of Columbia (4-10.75% progressive)
   'DE': 0.055,  // Delaware (0-6.6% progressive)
   'FL': 0.00,   // Florida (no state income tax)
   'GA': 0.0575, // Georgia (1-5.75% progressive)

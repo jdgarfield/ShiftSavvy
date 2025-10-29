@@ -9,7 +9,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileDown, FileSpreadsheet, DollarSign, Clock, TrendingUp, PiggyBank, ArrowLeft } from "lucide-react";
+import { FileDown, FileSpreadsheet, DollarSign, Clock, TrendingUp, PiggyBank, ArrowLeft, AlertTriangle } from "lucide-react";
 import { useLocation } from "wouter";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format, startOfWeek, startOfMonth, startOfYear, endOfWeek, endOfMonth, endOfYear } from "date-fns";
@@ -349,9 +349,12 @@ export default function Reports() {
           
           {/* Tax Disclaimer */}
           <div className="mb-4 p-4 rounded-lg bg-muted border-l-4 border-destructive">
-            <p className="text-sm font-semibold text-foreground mb-2">
-              ⚠️ Important: Tax Estimates Disclaimer
-            </p>
+            <div className="flex items-center gap-2 mb-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              <p className="text-sm font-semibold text-foreground">
+                Important: Tax Estimates Disclaimer
+              </p>
+            </div>
             <p className="text-xs text-muted-foreground mb-2">
               <strong>This is a planning tool, not a tax filing tool.</strong> These estimates are simplified calculations for planning purposes only and are not suitable for tax filing.
             </p>
