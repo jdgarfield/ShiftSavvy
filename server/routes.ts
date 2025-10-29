@@ -8,6 +8,28 @@ import { ZodError } from "zod";
 export async function registerRoutes(app: Express): Promise<Server> {
   await setupAuth(app);
 
+  // Site password verification endpoint (no auth required)
+  app.post('/api/verify-site-password', async (req, res) => {
+    try {
+      const { password } = req.body;
+      const correctPassword = process.env.SITE_ACCESS_PASSWORD;
+
+      if (!correctPassword) {
+        // If no password is set, allow access
+        return res.json({ success: true });
+      }
+
+      if (password === correctPassword) {
+        return res.json({ success: true });
+      } else {
+        return res.status(401).json({ success: false, message: "Incorrect password" });
+      }
+    } catch (error) {
+      console.error("Error verifying site password:", error);
+      res.status(500).json({ message: "Failed to verify password" });
+    }
+  });
+
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;

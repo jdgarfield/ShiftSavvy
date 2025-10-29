@@ -4,6 +4,7 @@ import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { PasswordGate } from "@/components/PasswordGate";
 import { useAuth } from "@/hooks/useAuth";
 import "./lib/i18n";
 import Landing from "@/pages/landing";
@@ -74,7 +75,9 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
-          <Router />
+          <PasswordGate>
+            <Router />
+          </PasswordGate>
           <Toaster />
         </TooltipProvider>
       </ThemeProvider>
