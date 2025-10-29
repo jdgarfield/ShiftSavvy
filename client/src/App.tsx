@@ -43,6 +43,7 @@ function Router() {
       ) : (
         <>
           <Route path="/" component={Dashboard} />
+          <Route path="/shift/new" component={ShiftForm} />
           <Route path="/shift/:id" component={ShiftForm} />
           <Route path="/jobs" component={Jobs} />
           <Route path="/reports" component={Reports} />

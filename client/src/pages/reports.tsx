@@ -8,7 +8,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileDown, FileSpreadsheet, DollarSign, Clock, TrendingUp } from "lucide-react";
+import { FileDown, FileSpreadsheet, DollarSign, Clock, TrendingUp, PiggyBank } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format, startOfWeek, startOfMonth, startOfYear, endOfWeek, endOfMonth, endOfYear } from "date-fns";
 import jsPDF from "jspdf";
@@ -111,6 +111,11 @@ export default function Reports() {
   const totalTax = federalTax + stateTax + localTax;
   const takeHome = totalEarnings - totalTax;
 
+  // Retirement savings recommendations (15% of total earnings)
+  const retirementRate = 0.15;
+  const recommendedRetirement = totalEarnings * retirementRate;
+  const afterRetirement = takeHome - recommendedRetirement;
+
   const chartData = filteredShifts
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     .slice(-10)
@@ -188,6 +193,13 @@ export default function Reports() {
       doc.text(`Total Tax: $${totalTax.toFixed(2)}`, 14, 126);
       doc.text(`Take Home: $${takeHome.toFixed(2)}`, 14, 132);
       
+      // Retirement savings section
+      doc.setFontSize(14);
+      doc.text('Retirement Savings', 14, 144);
+      doc.setFontSize(10);
+      doc.text(`Recommended Savings (${(retirementRate * 100).toFixed(0)}%): $${recommendedRetirement.toFixed(2)}`, 14, 152);
+      doc.text(`After Retirement Savings: $${afterRetirement.toFixed(2)}`, 14, 158);
+      
       // Shifts table
       const tableData = filteredShifts.map(s => [
         format(new Date(s.date), 'MMM d, yyyy'),
@@ -200,7 +212,7 @@ export default function Reports() {
       ]);
       
       autoTable(doc, {
-        startY: 145,
+        startY: 170,
         head: [['Date', 'Hours', 'Wage', 'Cash Tips', 'Credit Tips', 'Tip Out', 'Total']],
         body: tableData,
         theme: 'grid',
@@ -347,6 +359,37 @@ export default function Reports() {
               Set your state in Profile to get accurate state tax estimates
             </p>
           )}
+        </Card>
+
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <PiggyBank className="h-5 w-5 text-chart-1" />
+            <h2 className="text-lg font-heading font-semibold">Retirement Savings</h2>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">
+                Financial experts recommend saving <strong>15% of your income</strong> for retirement.
+              </p>
+              <div className="bg-muted rounded-lg p-4 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Recommended Savings ({(retirementRate * 100).toFixed(0)}%)</span>
+                  <span className="font-semibold tabular-nums text-chart-1" data-testid="retirement-savings">
+                    ${recommendedRetirement.toFixed(2)}
+                  </span>
+                </div>
+                <div className="pt-3 border-t border-border flex justify-between items-center">
+                  <span className="font-heading font-semibold">After Retirement Savings</span>
+                  <span className="font-heading font-bold text-xl tabular-nums text-chart-2" data-testid="after-retirement">
+                    ${afterRetirement.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Setting aside ${(recommendedRetirement / (period === 'week' ? 1 : period === 'month' ? 4 : 52)).toFixed(2)} per week can help you build a secure financial future.
+            </p>
+          </div>
         </Card>
 
         {chartData.length > 0 && (
