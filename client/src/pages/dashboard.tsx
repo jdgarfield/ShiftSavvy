@@ -14,6 +14,7 @@ import { DollarSign, TrendingUp, Calendar, Plus } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import type { Shift } from "@shared/schema";
 import { parseLocalDate, formatLocalDate } from "@/lib/dateUtils";
+import logoUrl from "@assets/Image Horizontal - 150_1761766859354.png";
 
 type PeriodFilter = 'TODAY' | 'WEEK' | null;
 
@@ -135,7 +136,12 @@ export default function Dashboard() {
       <header className="sticky top-0 z-40 bg-card border-b border-card-border">
         <div className="container max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-heading font-bold text-primary">ShiftSavvy</h1>
+            <img 
+              src={logoUrl} 
+              alt="ShiftSavvy" 
+              className="h-8"
+              data-testid="logo-header"
+            />
             <p className="text-xs text-muted-foreground">
               {t('dashboard.welcome')}{user && `, ${user.firstName || user.email}`}
             </p>
