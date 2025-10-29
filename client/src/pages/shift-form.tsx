@@ -49,35 +49,56 @@ export default function ShiftForm() {
   const createPresetJobsMutation = useMutation({
     mutationFn: async () => {
       const presetJobs = ['Server', 'Bartender', 'Expo', 'Busser', 'Host'];
-      const promises = presetJobs.map(name =>
-        apiRequest('POST', '/api/jobs', {
-          name,
-          description: '',
-          color: '#3B82F6',
-          isActive: 1,
-        })
-      );
-      return await Promise.all(promises);
+      const existingJobNames = jobs.map(j => j.name);
+      const jobsToCreate = presetJobs.filter(name => !existingJobNames.includes(name));
+      
+      if (jobsToCreate.length === 0) {
+        return [];
+      }
+
+      const results = [];
+      for (const name of jobsToCreate) {
+        try {
+          const result = await apiRequest('POST', '/api/jobs', {
+            name,
+            description: '',
+            color: '#3B82F6',
+            isActive: 1,
+          });
+          results.push(result);
+        } catch (error) {
+          console.error(`Error creating job ${name}:`, error);
+        }
+      }
+      return results;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
-      toast({
-        title: t('common.success'),
-        description: "Preset jobs created! Select one to continue.",
-      });
+    onSuccess: (results) => {
+      if (results.length > 0) {
+        queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+        toast({
+          title: t('common.success'),
+          description: `${results.length} preset job(s) added! Select one to continue.`,
+        });
+      }
     },
     onError: (error: Error) => {
       console.error("Error creating preset jobs:", error);
     },
   });
 
-  // Auto-create preset jobs on first visit if none exist
+  // Auto-create missing preset jobs whenever we visit and jobs are loaded
   useEffect(() => {
-    if (isAuthenticated && !jobsLoading && jobs.length === 0 && !hasAttemptedCreate && !createPresetJobsMutation.isPending) {
-      setHasAttemptedCreate(true);
-      createPresetJobsMutation.mutate();
+    if (isAuthenticated && !jobsLoading && !hasAttemptedCreate && !createPresetJobsMutation.isPending) {
+      const presetJobs = ['Server', 'Bartender', 'Expo', 'Busser', 'Host'];
+      const existingJobNames = jobs.map(j => j.name);
+      const missingJobs = presetJobs.filter(name => !existingJobNames.includes(name));
+      
+      if (missingJobs.length > 0) {
+        setHasAttemptedCreate(true);
+        createPresetJobsMutation.mutate();
+      }
     }
-  }, [isAuthenticated, jobsLoading, jobs.length, hasAttemptedCreate, createPresetJobsMutation]);
+  }, [isAuthenticated, jobsLoading, hasAttemptedCreate, createPresetJobsMutation, jobs]);
 
   const { data: shift } = useQuery<Shift>({
     queryKey: ["/api/shifts", shiftId],
