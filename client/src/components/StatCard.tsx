@@ -10,11 +10,17 @@ interface StatCardProps {
     positive: boolean;
   };
   testId?: string;
+  onClick?: () => void;
+  isActive?: boolean;
 }
 
-export function StatCard({ title, value, icon: Icon, trend, testId }: StatCardProps) {
+export function StatCard({ title, value, icon: Icon, trend, testId, onClick, isActive }: StatCardProps) {
   return (
-    <Card className="p-6 hover-elevate" data-testid={testId}>
+    <Card 
+      className={`p-6 hover-elevate ${onClick ? 'cursor-pointer active-elevate-2' : ''} ${isActive ? 'ring-2 ring-primary' : ''}`}
+      data-testid={testId}
+      onClick={onClick}
+    >
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">

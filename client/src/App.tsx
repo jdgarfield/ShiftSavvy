@@ -12,6 +12,7 @@ import ShiftForm from "@/pages/shift-form";
 import Jobs from "@/pages/jobs";
 import Reports from "@/pages/reports";
 import Profile from "@/pages/profile";
+import Calendar from "@/pages/calendar";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -48,6 +49,7 @@ function Router() {
           <Route path="/jobs" component={Jobs} />
           <Route path="/reports" component={Reports} />
           <Route path="/profile" component={Profile} />
+          <Route path="/calendar" component={Calendar} />
           <Route component={NotFound} />
         </>
       )}

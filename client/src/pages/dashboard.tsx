@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -12,12 +12,16 @@ import { Button } from "@/components/ui/button";
 import { DollarSign, TrendingUp, Calendar, Plus } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import type { Shift, Job } from "@shared/schema";
+import { parseLocalDate, formatLocalDate } from "@/lib/dateUtils";
+
+type PeriodFilter = 'TODAY' | 'WEEK' | null;
 
 export default function Dashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodFilter>(null);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -54,11 +58,19 @@ export default function Dashboard() {
   }
 
   // Calculate stats
-  const today = new Date().toISOString().split('T')[0];
-  const thisWeekStart = new Date();
+  const now = new Date();
+  const today = formatLocalDate(now);
+  
+  const thisWeekStart = new Date(now);
   thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
-  const thisMonthStart = new Date();
-  thisMonthStart.setDate(1);
+  thisWeekStart.setHours(0, 0, 0, 0);
+  
+  const thisWeekEnd = new Date(thisWeekStart);
+  thisWeekEnd.setDate(thisWeekEnd.getDate() + 6);
+  thisWeekEnd.setHours(23, 59, 59, 999);
+  
+  const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const thisMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
   const calculateEarnings = (shift: Shift) => {
     const totalTips = parseFloat(shift.cashTips || '0') + parseFloat(shift.creditTips || '0');
@@ -71,15 +83,56 @@ export default function Dashboard() {
   };
 
   const todayShifts = shifts.filter(s => s.date === today);
-  const weekShifts = shifts.filter(s => new Date(s.date) >= thisWeekStart);
-  const monthShifts = shifts.filter(s => new Date(s.date) >= thisMonthStart);
+  const weekShifts = shifts.filter(s => {
+    const shiftDate = parseLocalDate(s.date);
+    return shiftDate >= thisWeekStart && shiftDate <= thisWeekEnd;
+  });
+  const monthShifts = shifts.filter(s => {
+    const shiftDate = parseLocalDate(s.date);
+    return shiftDate >= thisMonthStart && shiftDate <= thisMonthEnd;
+  });
 
   const todayEarnings = todayShifts.reduce((sum, s) => sum + calculateEarnings(s), 0);
   const weekEarnings = weekShifts.reduce((sum, s) => sum + calculateEarnings(s), 0);
   const monthEarnings = monthShifts.reduce((sum, s) => sum + calculateEarnings(s), 0);
   const avgPerShift = shifts.length > 0 ? shifts.reduce((sum, s) => sum + calculateEarnings(s), 0) / shifts.length : 0;
 
-  const recentShifts = [...shifts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);
+  // Filter shifts based on selected period
+  const getDisplayedShifts = () => {
+    let filtered: Shift[];
+    
+    if (selectedPeriod === 'TODAY') {
+      filtered = todayShifts;
+    } else if (selectedPeriod === 'WEEK') {
+      filtered = weekShifts;
+    } else {
+      // Default: show recent 5 shifts - sort first, then slice
+      filtered = [...shifts].sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime()).slice(0, 5);
+      return filtered;
+    }
+    
+    return [...filtered].sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime());
+  };
+
+  const displayedShifts = getDisplayedShifts();
+
+  const getPeriodTitle = () => {
+    if (selectedPeriod === 'TODAY') return "Today's Shifts";
+    if (selectedPeriod === 'WEEK') return "This Week's Shifts";
+    return t('dashboard.recentShifts');
+  };
+
+  const handleTodayClick = () => {
+    setSelectedPeriod(selectedPeriod === 'TODAY' ? null : 'TODAY');
+  };
+
+  const handleWeekClick = () => {
+    setSelectedPeriod(selectedPeriod === 'WEEK' ? null : 'WEEK');
+  };
+
+  const handleMonthClick = () => {
+    setLocation('/calendar');
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -102,18 +155,23 @@ export default function Dashboard() {
             value={`$${todayEarnings.toFixed(2)}`}
             icon={DollarSign}
             testId="stat-today"
+            onClick={handleTodayClick}
+            isActive={selectedPeriod === 'TODAY'}
           />
           <StatCard
             title={t('dashboard.stats.weekEarnings')}
             value={`$${weekEarnings.toFixed(2)}`}
             icon={Calendar}
             testId="stat-week"
+            onClick={handleWeekClick}
+            isActive={selectedPeriod === 'WEEK'}
           />
           <StatCard
             title={t('dashboard.stats.monthEarnings')}
             value={`$${monthEarnings.toFixed(2)}`}
             icon={TrendingUp}
             testId="stat-month"
+            onClick={handleMonthClick}
           />
           <StatCard
             title={t('dashboard.stats.avgPerShift')}
@@ -126,7 +184,7 @@ export default function Dashboard() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-heading font-semibold">
-              {t('dashboard.recentShifts')}
+              {getPeriodTitle()}
             </h2>
             <Link href="/shift/new">
               <Button
@@ -140,11 +198,11 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          {recentShifts.length === 0 ? (
+          {displayedShifts.length === 0 ? (
             <Card className="p-12 text-center">
               <Calendar className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
               <h3 className="text-lg font-heading font-semibold mb-2">
-                {t('dashboard.noShifts')}
+                {selectedPeriod ? `No shifts for ${selectedPeriod === 'TODAY' ? 'today' : 'this week'}` : t('dashboard.noShifts')}
               </h3>
               <p className="text-muted-foreground mb-6">
                 {t('dashboard.addFirstShift')}
@@ -158,7 +216,7 @@ export default function Dashboard() {
             </Card>
           ) : (
             <div className="space-y-3">
-              {recentShifts.map((shift) => {
+              {displayedShifts.map((shift: Shift) => {
                 const job = jobs.find(j => j.id === shift.jobId);
                 return (
                   <ShiftCard
