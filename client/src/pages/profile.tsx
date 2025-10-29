@@ -304,6 +304,25 @@ export default function Profile() {
     return "U";
   };
 
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-numeric characters
+    const numbers = value.replace(/\D/g, '');
+    
+    // Limit to 10 digits
+    const limited = numbers.slice(0, 10);
+    
+    // Format as (XXX) XXX-XXXX
+    if (limited.length === 0) return '';
+    if (limited.length <= 3) return `(${limited}`;
+    if (limited.length <= 6) return `(${limited.slice(0, 3)}) ${limited.slice(3)}`;
+    return `(${limited.slice(0, 3)}) ${limited.slice(3, 6)}-${limited.slice(6)}`;
+  };
+
+  const handlePhoneChange = (field: 'phone' | 'managerPhone', value: string) => {
+    const formatted = formatPhoneNumber(value);
+    setEmployerForm({ ...employerForm, [field]: formatted });
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-40 bg-card border-b border-card-border">
@@ -614,8 +633,8 @@ export default function Profile() {
               <Input
                 id="phone"
                 value={employerForm.phone}
-                onChange={(e) => setEmployerForm({ ...employerForm, phone: e.target.value })}
-                placeholder="(555) 123-4567"
+                onChange={(e) => handlePhoneChange('phone', e.target.value)}
+                placeholder="(---) ___-____"
                 data-testid="input-phone"
               />
             </div>
@@ -634,8 +653,8 @@ export default function Profile() {
               <Input
                 id="managerPhone"
                 value={employerForm.managerPhone}
-                onChange={(e) => setEmployerForm({ ...employerForm, managerPhone: e.target.value })}
-                placeholder="(555) 987-6543"
+                onChange={(e) => handlePhoneChange('managerPhone', e.target.value)}
+                placeholder="(---) ___-____"
                 data-testid="input-manager-phone"
               />
             </div>

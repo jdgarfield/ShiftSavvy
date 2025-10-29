@@ -16,6 +16,8 @@ ShiftSavvy is a mobile-first Progressive Web App (PWA) designed for service indu
   - Integrated language selection (English/Spanish)
   - Integrated tax settings (state and local tax rate)
 - Multiple employer tracking (business name, address, contact info)
+  - Automatic phone number formatting: (XXX) XXX-XXXX
+  - Users only need to enter digits; formatting applied automatically
 - Offline-capable PWA with service worker
 - Internationalization support (i18n)
 - Theme switching (light/dark mode via header toggle)
