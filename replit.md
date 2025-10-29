@@ -31,6 +31,14 @@ ShiftSavvy is a mobile-first Progressive Web App (PWA) designed for service indu
 - Offline-capable PWA with service worker
 - Internationalization support (i18n)
 - Theme switching (light/dark mode via header toggle)
+- Global footer navigation
+  - Product navigation (Dashboard, Calendar, Reports, Jobs)
+  - Legal links (Terms of Service, Privacy Policy, Security)
+  - Integrated language switcher (EN/ES) with i18n
+  - Social media links (Instagram, TikTok, Facebook)
+  - Brand information and contact details
+  - Mobile-responsive grid layout
+  - Uses wouter Link component for SPA routing consistency
 
 ## User Preferences
 
