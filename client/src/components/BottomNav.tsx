@@ -10,7 +10,6 @@ export function BottomNav() {
     { path: "/", icon: Home, label: t('nav.dashboard'), testId: "nav-dashboard" },
     { path: "/shift/new", icon: PlusCircle, label: t('nav.addShift'), testId: "nav-add-shift" },
     { path: "/reports", icon: FileText, label: t('nav.reports'), testId: "nav-reports" },
-    { path: "/jobs", icon: Briefcase, label: t('nav.jobs'), testId: "nav-jobs" },
     { path: "/profile", icon: User, label: t('nav.profile'), testId: "nav-profile" },
   ];
 

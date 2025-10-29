@@ -36,13 +36,13 @@ ShiftSavvy is a mobile-first Progressive Web App (PWA) designed for service indu
 - Internationalization support (i18n)
 - Theme switching (light/dark mode via header toggle)
 - Bottom navigation bar (BottomNav)
-  - Appears on all authenticated pages (Dashboard, Calendar, Reports, Jobs, Profile, Shift Form, 404)
+  - Appears on all authenticated pages (Dashboard, Calendar, Reports, Profile, Shift Form, 404)
   - Does not appear on landing page (unauthenticated users)
   - Positioned just above footer in document flow
-  - Contains quick access to: Dashboard, Add Shift, Reports, Jobs, Profile
+  - Contains quick access to: Dashboard, Add Shift, Reports, Profile
   - Active state indication for current page
 - Global footer navigation
-  - Product navigation (Dashboard, Calendar, Reports, Jobs)
+  - Product navigation (Dashboard, Calendar, Reports)
   - Legal links (Terms of Service, Privacy Policy, Security)
   - Integrated language switcher (EN/ES) with i18n
   - Social media links (Instagram, TikTok, Facebook)
@@ -56,10 +56,27 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### October 2025 - Jobs Simplified to Predefined Options
+- **Jobs Page Removed**: Eliminated separate Jobs management page - jobs are now predefined options only
+- **Database Schema Change**: 
+  - Changed `shifts.jobId` (foreign key to jobs table) to `shifts.jobTitle` (varchar field)
+  - Executed SQL migration: renamed column, dropped foreign key constraint
+  - Jobs table remains in schema but is no longer used or accessible
+- **Predefined Job Titles**: Bartender, Server, Host, Busser, Expo (no custom job creation)
+- **Backend Updates**:
+  - Removed all job-related API endpoints (/api/jobs)
+  - Removed job CRUD methods from storage interface and DatabaseStorage
+  - Updated shift validation to check jobTitle instead of jobId
+- **Frontend Updates**:
+  - Dashboard and ShiftCard components now use shift.jobTitle directly (no job object lookups)
+  - Shift form implements predefined job dropdown with 5 default options
+  - Removed Jobs from navigation (BottomNav and Footer)
+  - Deleted jobs.tsx page and JobCard component
+
 ### October 2025 - Navigation Improvements
 - **Bottom Navigation Repositioned**: 
   - Changed BottomNav from fixed viewport positioning to document flow positioning
-  - Now appears just above footer on all authenticated pages (Dashboard, Calendar, Reports, Jobs, Profile, Shift Form, 404)
+  - Now appears just above footer on all authenticated pages (Dashboard, Calendar, Reports, Profile, Shift Form, 404)
   - Removed from landing page (unauthenticated users don't see it)
   - Provides consistent navigation across all authenticated sections of the app
 

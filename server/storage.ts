@@ -1,12 +1,9 @@
 import {
   users,
-  jobs,
   shifts,
   employers,
   type User,
   type UpsertUser,
-  type Job,
-  type InsertJob,
   type Shift,
   type InsertShift,
   type Employer,
@@ -19,12 +16,6 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   updateUserProfile(id: string, data: Partial<User>): Promise<User>;
-  
-  getJobs(userId: string): Promise<Job[]>;
-  getJob(id: string, userId: string): Promise<Job | undefined>;
-  createJob(userId: string, job: InsertJob): Promise<Job>;
-  updateJob(id: string, userId: string, job: Partial<InsertJob>): Promise<Job>;
-  deleteJob(id: string, userId: string): Promise<void>;
   
   getShifts(userId: string): Promise<Shift[]>;
   getShift(id: string, userId: string): Promise<Shift | undefined>;
@@ -84,47 +75,6 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async getJobs(userId: string): Promise<Job[]> {
-    return await db
-      .select()
-      .from(jobs)
-      .where(eq(jobs.userId, userId))
-      .orderBy(desc(jobs.createdAt));
-  }
-
-  async getJob(id: string, userId: string): Promise<Job | undefined> {
-    const [job] = await db
-      .select()
-      .from(jobs)
-      .where(and(eq(jobs.id, id), eq(jobs.userId, userId)));
-    return job;
-  }
-
-  async createJob(userId: string, jobData: InsertJob): Promise<Job> {
-    const [job] = await db
-      .insert(jobs)
-      .values({ ...jobData, userId })
-      .returning();
-    return job;
-  }
-
-  async updateJob(id: string, userId: string, jobData: Partial<InsertJob>): Promise<Job> {
-    const [job] = await db
-      .update(jobs)
-      .set({ ...jobData, updatedAt: new Date() })
-      .where(and(eq(jobs.id, id), eq(jobs.userId, userId)))
-      .returning();
-    if (!job) {
-      throw new Error("Job not found");
-    }
-    return job;
-  }
-
-  async deleteJob(id: string, userId: string): Promise<void> {
-    await db
-      .delete(jobs)
-      .where(and(eq(jobs.id, id), eq(jobs.userId, userId)));
-  }
 
   async getShifts(userId: string): Promise<Shift[]> {
     return await db

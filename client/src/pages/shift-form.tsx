@@ -102,7 +102,11 @@ export default function ShiftForm() {
       }
     },
     onSuccess: () => {
+      // Invalidate all shift queries including list and individual shift
       queryClient.invalidateQueries({ queryKey: ["/api/shifts"] });
+      if (isEditing && shiftId) {
+        queryClient.invalidateQueries({ queryKey: ["/api/shifts", shiftId] });
+      }
       toast({
         title: t('common.success'),
         description: isEditing ? "Shift updated successfully" : "Shift created successfully",

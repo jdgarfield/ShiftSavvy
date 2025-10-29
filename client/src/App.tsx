@@ -9,7 +9,6 @@ import "./lib/i18n";
 import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
 import ShiftForm from "@/pages/shift-form";
-import Jobs from "@/pages/jobs";
 import Reports from "@/pages/reports";
 import Profile from "@/pages/profile";
 import Calendar from "@/pages/calendar";
@@ -51,7 +50,6 @@ function Router() {
               return <ShiftForm />;
             }}
           </Route>
-          <Route path="/jobs" component={Jobs} />
           <Route path="/reports" component={Reports} />
           <Route path="/profile" component={Profile} />
           <Route path="/calendar" component={Calendar} />

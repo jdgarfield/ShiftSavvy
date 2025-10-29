@@ -76,7 +76,6 @@ export function Footer({ isAuthenticated = false }: FooterProps) {
               <li><Link className="text-muted-foreground hover:text-foreground transition-colors" href="/" data-testid="link-footer-dashboard">Dashboard</Link></li>
               <li><Link className="text-muted-foreground hover:text-foreground transition-colors" href="/calendar" data-testid="link-footer-calendar">Calendar</Link></li>
               <li><Link className="text-muted-foreground hover:text-foreground transition-colors" href="/reports" data-testid="link-footer-reports">Reports</Link></li>
-              <li><Link className="text-muted-foreground hover:text-foreground transition-colors" href="/jobs" data-testid="link-footer-jobs">Jobs</Link></li>
             </ul>
           </nav>
 

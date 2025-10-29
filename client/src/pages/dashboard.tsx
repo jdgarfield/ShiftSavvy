@@ -12,7 +12,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DollarSign, TrendingUp, Calendar, Plus } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import type { Shift, Job } from "@shared/schema";
+import type { Shift } from "@shared/schema";
 import { parseLocalDate, formatLocalDate } from "@/lib/dateUtils";
 
 type PeriodFilter = 'TODAY' | 'WEEK' | null;
@@ -39,11 +39,6 @@ export default function Dashboard() {
 
   const { data: shifts = [], isLoading: shiftsLoading } = useQuery<Shift[]>({
     queryKey: ["/api/shifts"],
-    enabled: isAuthenticated,
-  });
-
-  const { data: jobs = [] } = useQuery<Job[]>({
-    queryKey: ["/api/jobs"],
     enabled: isAuthenticated,
   });
 
@@ -217,17 +212,13 @@ export default function Dashboard() {
             </Card>
           ) : (
             <div className="space-y-3">
-              {displayedShifts.map((shift: Shift) => {
-                const job = jobs.find(j => j.id === shift.jobId);
-                return (
-                  <ShiftCard
-                    key={shift.id}
-                    shift={shift}
-                    job={job}
-                    onClick={() => setLocation(`/shift/${shift.id}`)}
-                  />
-                );
-              })}
+              {displayedShifts.map((shift: Shift) => (
+                <ShiftCard
+                  key={shift.id}
+                  shift={shift}
+                  onClick={() => setLocation(`/shift/${shift.id}`)}
+                />
+              ))}
             </div>
           )}
         </div>

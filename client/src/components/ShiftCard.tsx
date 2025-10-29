@@ -2,15 +2,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, DollarSign, Users } from "lucide-react";
 import { format } from "date-fns";
-import type { Shift, Job } from "@shared/schema";
+import type { Shift } from "@shared/schema";
 
 interface ShiftCardProps {
   shift: Shift;
-  job?: Job;
   onClick?: () => void;
 }
 
-export function ShiftCard({ shift, job, onClick }: ShiftCardProps) {
+export function ShiftCard({ shift, onClick }: ShiftCardProps) {
   const totalEarnings = 
     parseFloat(shift.hourlyWage) * parseFloat(shift.hoursWorked) +
     parseFloat(shift.cashTips || '0') +
@@ -28,13 +27,12 @@ export function ShiftCard({ shift, job, onClick }: ShiftCardProps) {
           <h3 className="font-heading font-semibold text-lg" data-testid="shift-date">
             {format(new Date(shift.date), "EEE, MMM d")}
           </h3>
-          {job && (
+          {shift.jobTitle && (
             <Badge
-              style={{ backgroundColor: job.color + '20', color: job.color, borderColor: job.color }}
               className="mt-1"
               data-testid="shift-job-badge"
             >
-              {job.name}
+              {shift.jobTitle}
             </Badge>
           )}
         </div>
