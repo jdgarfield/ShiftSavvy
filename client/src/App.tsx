@@ -45,7 +45,12 @@ function Router() {
         <>
           <Route path="/" component={Dashboard} />
           <Route path="/shift/new" component={ShiftForm} />
-          <Route path="/shift/:id" component={ShiftForm} />
+          <Route path="/shift/:id">
+            {(params) => {
+              if (params.id === 'new') return null;
+              return <ShiftForm />;
+            }}
+          </Route>
           <Route path="/jobs" component={Jobs} />
           <Route path="/reports" component={Reports} />
           <Route path="/profile" component={Profile} />
