@@ -85,12 +85,10 @@ export default function Dashboard() {
       <header className="sticky top-0 z-40 bg-card border-b border-card-border">
         <div className="container max-w-screen-md mx-auto px-4 h-14 flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-heading font-semibold">{t('dashboard.welcome')}</h1>
-            {user && (
-              <p className="text-sm text-muted-foreground">
-                {user.firstName || user.email}
-              </p>
-            )}
+            <h1 className="text-lg font-heading font-semibold">ShiftSavvy</h1>
+            <p className="text-xs text-muted-foreground">
+              {t('dashboard.welcome')}{user && `, ${user.firstName || user.email}`}
+            </p>
           </div>
           <ThemeToggle />
         </div>

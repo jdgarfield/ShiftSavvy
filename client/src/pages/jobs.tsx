@@ -141,7 +141,10 @@ export default function Jobs() {
     <div className="min-h-screen bg-background pb-20">
       <header className="sticky top-0 z-40 bg-card border-b border-card-border">
         <div className="container max-w-screen-md mx-auto px-4 h-14 flex items-center justify-between">
-          <h1 className="text-lg font-heading font-semibold">{t('jobs.title')}</h1>
+          <div>
+            <h1 className="text-lg font-heading font-semibold">ShiftSavvy</h1>
+            <p className="text-xs text-muted-foreground">{t('jobs.title')}</p>
+          </div>
           <div className="flex items-center gap-2">
             <Button
               size="sm"

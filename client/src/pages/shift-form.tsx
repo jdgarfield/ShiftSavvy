@@ -40,9 +40,38 @@ export default function ShiftForm() {
     }
   }, [isAuthenticated, authLoading, toast]);
 
-  const { data: jobs = [] } = useQuery<Job[]>({
+  const { data: jobs = [], isLoading: jobsLoading } = useQuery<Job[]>({
     queryKey: ["/api/jobs"],
     enabled: isAuthenticated,
+  });
+
+  const createPresetJobsMutation = useMutation({
+    mutationFn: async () => {
+      const presetJobs = ['Server', 'Bartender', 'Expo', 'Busser', 'Host'];
+      const promises = presetJobs.map(name =>
+        apiRequest('POST', '/api/jobs', {
+          name,
+          description: '',
+          color: '#3B82F6',
+          isActive: 1,
+        })
+      );
+      return await Promise.all(promises);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+      toast({
+        title: t('common.success'),
+        description: "Preset jobs created successfully!",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t('common.error'),
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   const { data: shift } = useQuery<Shift>({
@@ -178,9 +207,12 @@ export default function ShiftForm() {
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-lg font-heading font-semibold">
-              {isEditing ? t('shift.edit') : t('shift.add')}
-            </h1>
+            <div>
+              <h1 className="text-lg font-heading font-semibold">ShiftSavvy</h1>
+              <p className="text-xs text-muted-foreground">
+                {isEditing ? t('shift.edit') : t('shift.add')}
+              </p>
+            </div>
           </div>
           {isEditing && (
             <Button
@@ -198,20 +230,32 @@ export default function ShiftForm() {
       </header>
 
       <main className="container max-w-screen-md mx-auto px-4 py-6">
-        {jobs.length === 0 && (
-          <Card className="p-6 mb-6 bg-muted border-primary">
+        {jobs.length === 0 && !jobsLoading && (
+          <Card className="p-6 mb-6 bg-muted">
             <p className="text-sm font-medium mb-2">No jobs yet!</p>
             <p className="text-sm text-muted-foreground mb-4">
-              You need to create a job before you can add a shift.
+              Let's quickly set up the common restaurant positions for you.
             </p>
-            <Button
-              type="button"
-              onClick={() => setLocation("/jobs")}
-              data-testid="button-go-to-jobs"
-              className="hover-elevate active-elevate-2"
-            >
-              Go to Jobs
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                onClick={() => createPresetJobsMutation.mutate()}
+                data-testid="button-create-preset-jobs"
+                className="hover-elevate active-elevate-2"
+                disabled={createPresetJobsMutation.isPending}
+              >
+                {createPresetJobsMutation.isPending ? "Creating..." : "Create Preset Jobs"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setLocation("/jobs")}
+                data-testid="button-go-to-jobs"
+                className="hover-elevate active-elevate-2"
+              >
+                Manage Jobs
+              </Button>
+            </div>
           </Card>
         )}
         
