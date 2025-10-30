@@ -112,6 +112,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### October 2025 - Dashboard and Reports Enhancements
+- **Removed Notes Field**: Removed notes input from Add Shift page to simplify form
+- **14-Day Rolling Average Chart**: Clicking "Average per shift" stat card now displays a line graph showing 14-day rolling averages over the last 30 days
+- **Inline Month Summary**: Clicking "This Month" stat card now displays monthly data inline (total earnings, shifts, avg per shift, total hours) instead of navigating to calendar page
+- **Employer-Specific Reports**: Added employer filter dropdown to Reports page allowing users to generate separate reports per employer for tax form purposes
+  - Filter options: All Employers, No Employer, or specific employer
+  - Visual indicator shows which employer's data is being viewed
+  - Helps with tax preparation since employers provide separate tax forms
+
 ### October 2025 - Cash Tips Tax Option
 - **Cash Tips in Tax Estimates Feature**:
   - Added toggle in Profile > Tax Settings to include/exclude cash tips from tax calculations
