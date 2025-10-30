@@ -11,7 +11,6 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -74,7 +73,6 @@ export default function ShiftForm() {
       cashTips: 0,
       creditTips: 0,
       tipOut: 0,
-      notes: "",
     },
   });
 
@@ -89,7 +87,6 @@ export default function ShiftForm() {
         cashTips: parseFloat(shift.cashTips || '0'),
         creditTips: parseFloat(shift.creditTips || '0'),
         tipOut: parseFloat(shift.tipOut || '0'),
-        notes: shift.notes || "",
       });
     }
   }, [shift, form]);
@@ -358,17 +355,6 @@ export default function ShiftForm() {
               <p className="text-xs text-muted-foreground mt-1">
                 Percentage of tips shared with others
               </p>
-            </div>
-
-            <div>
-              <Label htmlFor="notes">{t('shift.notes')}</Label>
-              <Textarea
-                id="notes"
-                data-testid="input-notes"
-                {...form.register("notes")}
-                className="mt-2 resize-none"
-                rows={3}
-              />
             </div>
           </Card>
 
