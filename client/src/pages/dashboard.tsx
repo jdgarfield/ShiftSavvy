@@ -265,10 +265,7 @@ export default function Dashboard() {
                     if (name === 'average') return [`$${value.toFixed(2)}`, '14-Day Avg'];
                     return [value, name];
                   }}
-                  labelFormatter={(label) => {
-                    const data = rollingAverageData.find(d => d.date === label);
-                    return data ? `${label} (${data.shiftCount} shifts)` : label;
-                  }}
+                  labelFormatter={(label) => label}
                   contentStyle={{
                     backgroundColor: 'hsl(var(--background))',
                     border: '1px solid hsl(var(--border))',
