@@ -16,7 +16,7 @@ import { format, startOfWeek, startOfMonth, startOfYear, endOfWeek, endOfMonth, 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { STATE_TAX_RATES, FEDERAL_TAX_RATE } from "@shared/taxRates";
-import type { Shift } from "@shared/schema";
+import type { Shift, Employer } from "@shared/schema";
 import logoUrl from "@assets/ShiftSavvy - FINAL_1761769622129.png";
 
 type Period = 'week' | 'month' | 'year';
@@ -27,6 +27,7 @@ export default function Reports() {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const [period, setPeriod] = useState<Period>('month');
+  const [selectedEmployerId, setSelectedEmployerId] = useState<string>('all');
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -43,6 +44,11 @@ export default function Reports() {
 
   const { data: shifts = [], isLoading: shiftsLoading } = useQuery<Shift[]>({
     queryKey: ["/api/shifts"],
+    enabled: isAuthenticated,
+  });
+
+  const { data: employers = [] } = useQuery<Employer[]>({
+    queryKey: ["/api/employers"],
     enabled: isAuthenticated,
   });
 
@@ -93,8 +99,19 @@ export default function Reports() {
 
   const filteredShifts = shifts.filter(s => {
     const shiftDate = new Date(s.date);
-    return shiftDate >= startDate && shiftDate <= endDate;
+    const withinPeriod = shiftDate >= startDate && shiftDate <= endDate;
+    
+    // Filter by employer if selected
+    if (selectedEmployerId === 'all') {
+      return withinPeriod;
+    } else if (selectedEmployerId === 'none') {
+      return withinPeriod && !s.employerId;
+    } else {
+      return withinPeriod && s.employerId === selectedEmployerId;
+    }
   });
+
+  const selectedEmployer = employers.find(e => e.id === selectedEmployerId);
 
   const totalEarnings = filteredShifts.reduce((sum, s) => sum + calculateEarnings(s), 0);
   const wageEarnings = filteredShifts.reduce((sum, s) => sum + calculateWageEarnings(s), 0);
@@ -278,7 +295,7 @@ export default function Reports() {
       </header>
 
       <main className="container max-w-screen-md mx-auto px-4 py-6 space-y-6">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <Select value={period} onValueChange={(value: Period) => setPeriod(value)}>
             <SelectTrigger data-testid="select-period" className="w-40">
               <SelectValue />
@@ -289,6 +306,22 @@ export default function Reports() {
               <SelectItem value="year">{t('reports.thisYear')}</SelectItem>
             </SelectContent>
           </Select>
+          
+          <Select value={selectedEmployerId} onValueChange={setSelectedEmployerId}>
+            <SelectTrigger data-testid="select-employer" className="w-48">
+              <SelectValue placeholder="All Employers" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Employers</SelectItem>
+              <SelectItem value="none">No Employer</SelectItem>
+              {employers.map(employer => (
+                <SelectItem key={employer.id} value={employer.id}>
+                  {employer.businessName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          
           <div className="flex-1"></div>
           <Button
             variant="outline"
@@ -311,6 +344,19 @@ export default function Reports() {
             PDF
           </Button>
         </div>
+
+        {selectedEmployerId !== 'all' && (
+          <Card className="p-4 bg-primary/5 border-primary/20" data-testid="card-employer-filter-notice">
+            <p className="text-sm font-medium">
+              Viewing report for: <span className="font-bold" data-testid="text-selected-employer">
+                {selectedEmployerId === 'none' ? 'No Employer' : selectedEmployer?.businessName}
+              </span>
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              This shows data only from shifts associated with this employer, useful for tax form preparation.
+            </p>
+          </Card>
+        )}
 
         <Card className="p-6">
           <h2 className="text-lg font-heading font-semibold mb-4">{t('reports.summary.title')}</h2>
