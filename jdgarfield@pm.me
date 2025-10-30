@@ -1,1 +1,14 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  root: 'client',          // index.html lives in /client
+  plugins: [react()],      // supports .tsx
+  build: {
+    outDir: 'dist',        // output: /client/dist
+    emptyOutDir: true
+  },
+  server: { host: true },
+  preview: { host: true }
+});
 
