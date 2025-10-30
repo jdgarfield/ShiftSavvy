@@ -37,6 +37,7 @@ export const users = pgTable("users", {
   // Tax settings
   state: varchar("state", { length: 2 }), // US state code for tax calculation (also serves as location state)
   localTaxRate: decimal("local_tax_rate", { precision: 5, scale: 4 }), // Local tax rate as decimal
+  includeCashTipsInTaxes: integer("include_cash_tips_in_taxes").default(1).notNull(), // 1 = include, 0 = exclude
   // Preferences
   preferredLanguage: varchar("preferred_language", { length: 5 }).default('en').notNull(),
   createdAt: timestamp("created_at").defaultNow(),

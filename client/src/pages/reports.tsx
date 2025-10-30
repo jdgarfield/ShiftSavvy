@@ -104,19 +104,23 @@ export default function Reports() {
   const totalHours = filteredShifts.reduce((sum, s) => sum + parseFloat(s.hoursWorked), 0);
   const avgPerHour = totalHours > 0 ? totalEarnings / totalHours : 0;
 
+  // Calculate taxable income based on user preference
+  const includeCashTips = user?.includeCashTipsInTaxes === 1;
+  const taxableIncome = includeCashTips ? totalEarnings : (totalEarnings - cashTips);
+
   const federalTaxRate = FEDERAL_TAX_RATE;
   const stateTaxRate = user?.state ? (STATE_TAX_RATES[user.state] || 0.05) : 0.05;
   const localTaxRate = user?.localTaxRate ? parseFloat(user.localTaxRate) : 0.02;
 
-  const federalTax = totalEarnings * federalTaxRate;
-  const stateTax = totalEarnings * stateTaxRate;
-  const localTax = totalEarnings * localTaxRate;
+  const federalTax = taxableIncome * federalTaxRate;
+  const stateTax = taxableIncome * stateTaxRate;
+  const localTax = taxableIncome * localTaxRate;
   const totalTax = federalTax + stateTax + localTax;
-  const takeHome = totalEarnings - totalTax;
+  const takeHome = taxableIncome - totalTax;
 
   // Retirement savings recommendations (15% of total earnings)
   const retirementRate = 0.15;
-  const recommendedRetirement = totalEarnings * retirementRate;
+  const recommendedRetirement = taxableIncome * retirementRate;
   const afterRetirement = takeHome - recommendedRetirement;
 
   const chartData = filteredShifts
@@ -387,6 +391,17 @@ export default function Reports() {
               {' '}or consult with a CPA.
             </p>
           </div>
+
+          {!includeCashTips && (
+            <div className="bg-muted/50 border border-border rounded-lg p-3 mb-4">
+              <p className="text-sm font-medium text-foreground mb-1">
+                Cash Tips Excluded from Tax Estimates
+              </p>
+              <p className="text-xs text-muted-foreground">
+                These estimates exclude ${cashTips.toFixed(2)} in cash tips based on your tax settings. You can change this in your Profile.
+              </p>
+            </div>
+          )}
 
           <div className="space-y-3">
             <div className="flex justify-between items-center">

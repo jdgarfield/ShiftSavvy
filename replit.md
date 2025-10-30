@@ -112,6 +112,28 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### October 2025 - Cash Tips Tax Option
+- **Cash Tips in Tax Estimates Feature**:
+  - Added toggle in Profile > Tax Settings to include/exclude cash tips from tax calculations
+  - Users can choose whether to report cash tips for tax estimation purposes
+  - Tax calculations respect user preference (default: include cash tips)
+  - Visual indicator on Reports page when cash tips are excluded
+  - Helps users plan for different tax reporting scenarios
+  - Setting stored in user profile as `includeCashTipsInTaxes` boolean field
+
+### October 2025 - Mobile UI Improvements
+- **Fixed Mobile Navigation**:
+  - Reduced stat card icon sizes from 32px to 20px for better mobile fit
+  - Fixed bottom navigation to stay visible while scrolling (sticky positioning)
+  - Reduced nav icon sizes from 24px to 20px to prevent overflow
+  - All pages have proper bottom padding to prevent content from being hidden
+
+### October 2025 - Routing Fix
+- **404 Page Fix**:
+  - Restructured Wouter routing to prevent 404 page from appearing on valid routes
+  - Changed from nested fragment-based routing to flat Switch structure
+  - 404 page now only appears for truly invalid routes
+
 ### October 2025 - Password-Protected Site Access
 - **Site Access Gate Implemented**:
   - Added password protection to control access to entire site during testing phase

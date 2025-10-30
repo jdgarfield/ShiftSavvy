@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
 import { LogOut, Globe, DollarSign, Building2, Plus, Edit, Trash2, ArrowLeft } from "lucide-react";
 import type { Employer } from "@shared/schema";
 import { useLocation } from "wouter";
@@ -48,6 +49,7 @@ export default function Profile() {
   
   const [state, setState] = useState(user?.state || '');
   const [localTaxRate, setLocalTaxRate] = useState(user?.localTaxRate ? (parseFloat(user.localTaxRate) * 100).toFixed(2) : '');
+  const [includeCashTipsInTaxes, setIncludeCashTipsInTaxes] = useState(user?.includeCashTipsInTaxes === 1);
   
   // Profile fields
   const [firstName, setFirstName] = useState(user?.firstName || '');
@@ -98,6 +100,7 @@ export default function Profile() {
       setCity(user.city || '');
       setState(user.state || '');
       setLocalTaxRate(user.localTaxRate ? (parseFloat(user.localTaxRate) * 100).toFixed(2) : '');
+      setIncludeCashTipsInTaxes(user.includeCashTipsInTaxes === 1);
       
       // Show edit form if profile is incomplete
       if (!user.firstName || !user.lastName) {
@@ -162,7 +165,7 @@ export default function Profile() {
   };
 
   const updateTaxSettingsMutation = useMutation({
-    mutationFn: async (data: { state?: string; localTaxRate?: number }) => {
+    mutationFn: async (data: { state?: string; localTaxRate?: number; includeCashTipsInTaxes?: boolean }) => {
       return await apiRequest('PATCH', '/api/auth/user/tax-settings', data);
     },
     onSuccess: () => {
@@ -275,6 +278,7 @@ export default function Profile() {
     updateTaxSettingsMutation.mutate({
       state: state || undefined,
       localTaxRate: localRate,
+      includeCashTipsInTaxes,
     });
   };
 
@@ -548,6 +552,21 @@ export default function Profile() {
                       Enter as percentage (e.g., 2.00 for 2%)
                     </p>
                   </div>
+
+                  <div className="flex items-center justify-between gap-3 pt-2">
+                    <div className="flex-1">
+                      <Label htmlFor="includeCashTips" className="mb-1">Include Cash Tips in Tax Estimates</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Toggle to include or exclude cash tips from tax calculations
+                      </p>
+                    </div>
+                    <Switch
+                      id="includeCashTips"
+                      checked={includeCashTipsInTaxes}
+                      onCheckedChange={setIncludeCashTipsInTaxes}
+                      data-testid="switch-include-cash-tips"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -573,6 +592,7 @@ export default function Profile() {
                     setZipCode(user?.zipCode || '');
                     setState(user?.state || '');
                     setLocalTaxRate(user?.localTaxRate ? (parseFloat(user.localTaxRate) * 100).toFixed(2) : '');
+                    setIncludeCashTipsInTaxes(user?.includeCashTipsInTaxes === 1);
                   }}
                   data-testid="button-cancel-profile"
                   className="hover-elevate active-elevate-2"

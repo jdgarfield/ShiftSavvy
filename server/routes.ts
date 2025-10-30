@@ -44,7 +44,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch('/api/auth/user/tax-settings', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const { state, localTaxRate } = req.body;
+      const { state, localTaxRate, includeCashTipsInTaxes } = req.body;
       
       const currentUser = await storage.getUser(userId);
       if (!currentUser) {
@@ -55,6 +55,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...currentUser,
         state: state !== undefined ? state : currentUser.state,
         localTaxRate: localTaxRate !== undefined ? localTaxRate.toString() : currentUser.localTaxRate,
+        includeCashTipsInTaxes: includeCashTipsInTaxes !== undefined ? (includeCashTipsInTaxes ? 1 : 0) : currentUser.includeCashTipsInTaxes,
       });
       
       res.json(updatedUser);
