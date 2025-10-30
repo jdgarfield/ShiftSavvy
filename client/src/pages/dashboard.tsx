@@ -14,9 +14,11 @@ import { DollarSign, TrendingUp, Calendar, Plus } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import type { Shift } from "@shared/schema";
 import { parseLocalDate, formatLocalDate } from "@/lib/dateUtils";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { format } from "date-fns";
 import logoUrl from "@assets/ShiftSavvy - FINAL_1761769622129.png";
 
-type PeriodFilter = 'TODAY' | 'WEEK' | null;
+type PeriodFilter = 'TODAY' | 'WEEK' | 'AVG' | null;
 
 export default function Dashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -127,9 +129,56 @@ export default function Dashboard() {
     setSelectedPeriod(selectedPeriod === 'WEEK' ? null : 'WEEK');
   };
 
+  const handleAvgClick = () => {
+    setSelectedPeriod(selectedPeriod === 'AVG' ? null : 'AVG');
+  };
+
   const handleMonthClick = () => {
     setLocation('/calendar');
   };
+
+  // Calculate 14-day rolling averages
+  const calculate14DayRollingAverage = () => {
+    if (shifts.length === 0) return [];
+    
+    // Get all shifts sorted by date
+    const sortedShifts = [...shifts].sort((a, b) => 
+      parseLocalDate(a.date).getTime() - parseLocalDate(b.date).getTime()
+    );
+    
+    const result = [];
+    const today = new Date();
+    
+    // Go back 30 days to have enough data to show
+    for (let i = 29; i >= 0; i--) {
+      const targetDate = new Date(today);
+      targetDate.setDate(targetDate.getDate() - i);
+      
+      // Get shifts from the last 14 days relative to target date
+      const startDate = new Date(targetDate);
+      startDate.setDate(startDate.getDate() - 13);
+      
+      const relevantShifts = sortedShifts.filter(s => {
+        const shiftDate = parseLocalDate(s.date);
+        return shiftDate >= startDate && shiftDate <= targetDate;
+      });
+      
+      const avgEarnings = relevantShifts.length > 0
+        ? relevantShifts.reduce((sum, s) => sum + calculateEarnings(s), 0) / relevantShifts.length
+        : 0;
+      
+      result.push({
+        date: format(targetDate, 'MMM d'),
+        fullDate: formatLocalDate(targetDate),
+        average: parseFloat(avgEarnings.toFixed(2)),
+        shiftCount: relevantShifts.length,
+      });
+    }
+    
+    return result;
+  };
+
+  const rollingAverageData = calculate14DayRollingAverage();
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -180,8 +229,56 @@ export default function Dashboard() {
             value={`$${avgPerShift.toFixed(2)}`}
             icon={DollarSign}
             testId="stat-avg"
+            onClick={handleAvgClick}
+            isActive={selectedPeriod === 'AVG'}
           />
         </div>
+
+        {selectedPeriod === 'AVG' && rollingAverageData.length > 0 && (
+          <Card className="p-6">
+            <h2 className="text-lg font-heading font-semibold mb-4">14-Day Rolling Average</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Each point shows the average earnings per shift over the previous 14 days
+            </p>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={rollingAverageData}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <XAxis 
+                  dataKey="date" 
+                  className="text-xs"
+                  tick={{ fontSize: 11 }}
+                />
+                <YAxis 
+                  className="text-xs"
+                  tick={{ fontSize: 11 }}
+                  tickFormatter={(value) => `$${value}`}
+                />
+                <Tooltip 
+                  formatter={(value: number, name: string) => {
+                    if (name === 'average') return [`$${value.toFixed(2)}`, '14-Day Avg'];
+                    return [value, name];
+                  }}
+                  labelFormatter={(label) => {
+                    const data = rollingAverageData.find(d => d.date === label);
+                    return data ? `${label} (${data.shiftCount} shifts)` : label;
+                  }}
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--background))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '6px',
+                  }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="average" 
+                  stroke="hsl(var(--primary))" 
+                  strokeWidth={2}
+                  dot={{ fill: 'hsl(var(--primary))' }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </Card>
+        )}
 
         <div>
           <div className="flex items-center justify-between mb-4">
