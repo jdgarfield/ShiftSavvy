@@ -18,7 +18,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { format } from "date-fns";
 import logoUrl from "@assets/ShiftSavvy - FINAL_1761769622129.png";
 
-type PeriodFilter = 'TODAY' | 'WEEK' | 'AVG' | null;
+type PeriodFilter = 'TODAY' | 'WEEK' | 'MONTH' | 'AVG' | null;
 
 export default function Dashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -104,6 +104,11 @@ export default function Dashboard() {
       filtered = todayShifts;
     } else if (selectedPeriod === 'WEEK') {
       filtered = weekShifts;
+    } else if (selectedPeriod === 'MONTH') {
+      filtered = monthShifts;
+    } else if (selectedPeriod === 'AVG') {
+      // Don't show shift list when viewing the rolling average graph
+      return [];
     } else {
       // Default: show recent 5 shifts - sort first, then slice
       filtered = [...shifts].sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime()).slice(0, 5);
@@ -118,6 +123,7 @@ export default function Dashboard() {
   const getPeriodTitle = () => {
     if (selectedPeriod === 'TODAY') return "Today's Shifts";
     if (selectedPeriod === 'WEEK') return "This Week's Shifts";
+    if (selectedPeriod === 'MONTH') return "This Month's Shifts";
     return t('dashboard.recentShifts');
   };
 
@@ -134,7 +140,7 @@ export default function Dashboard() {
   };
 
   const handleMonthClick = () => {
-    setLocation('/calendar');
+    setSelectedPeriod(selectedPeriod === 'MONTH' ? null : 'MONTH');
   };
 
   // Calculate 14-day rolling averages
@@ -223,6 +229,7 @@ export default function Dashboard() {
             icon={TrendingUp}
             testId="stat-month"
             onClick={handleMonthClick}
+            isActive={selectedPeriod === 'MONTH'}
           />
           <StatCard
             title={t('dashboard.stats.avgPerShift')}
@@ -277,6 +284,42 @@ export default function Dashboard() {
                 />
               </LineChart>
             </ResponsiveContainer>
+          </Card>
+        )}
+
+        {selectedPeriod === 'MONTH' && (
+          <Card className="p-6">
+            <h2 className="text-lg font-heading font-semibold mb-4">This Month's Summary</h2>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="bg-muted rounded-lg p-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Total Earnings</p>
+                <p className="text-2xl font-heading font-bold tabular-nums">${monthEarnings.toFixed(2)}</p>
+              </div>
+              <div className="bg-muted rounded-lg p-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Total Shifts</p>
+                <p className="text-2xl font-heading font-bold tabular-nums">{monthShifts.length}</p>
+              </div>
+              <div className="bg-muted rounded-lg p-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Avg per Shift</p>
+                <p className="text-2xl font-heading font-bold tabular-nums">
+                  ${monthShifts.length > 0 ? (monthEarnings / monthShifts.length).toFixed(2) : '0.00'}
+                </p>
+              </div>
+              <div className="bg-muted rounded-lg p-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Total Hours</p>
+                <p className="text-2xl font-heading font-bold tabular-nums">
+                  {monthShifts.reduce((sum, s) => sum + parseFloat(s.hoursWorked), 0).toFixed(1)}
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <Link href="/calendar">
+                <Button variant="outline" size="sm" className="hover-elevate active-elevate-2">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  View Full Calendar
+                </Button>
+              </Link>
+            </div>
           </Card>
         )}
 
