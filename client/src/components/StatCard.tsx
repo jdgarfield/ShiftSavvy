@@ -40,8 +40,8 @@ export function StatCard({ title, value, icon: Icon, trend, testId, onClick, isA
             </p>
           )}
         </div>
-        <div className="rounded-xl bg-primary/10 p-3">
-          <Icon className="h-8 w-8 text-primary" />
+        <div className="rounded-xl bg-primary/10 p-2">
+          <Icon className="h-5 w-5 text-primary" />
         </div>
       </div>
     </Card>
